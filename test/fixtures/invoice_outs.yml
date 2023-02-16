@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  invoice_number: MyString
+  date: 2023-02-16
+  tax: 9.99
+  total: 9.99
+  paid_status: false
+  store_id: 1
+  payment_method: MyString
+
+two:
+  invoice_number: MyString
+  date: 2023-02-16
+  tax: 9.99
+  total: 9.99
+  paid_status: false
+  store_id: 1
+  payment_method: MyString

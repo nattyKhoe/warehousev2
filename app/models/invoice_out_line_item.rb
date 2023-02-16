@@ -1,0 +1,2 @@
+class InvoiceOutLineItem < ApplicationRecord
+end

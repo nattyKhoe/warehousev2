@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tax_number: MyString
+  store_code: MyString
+  name: MyString
+  discount: 9.99
+  plafond: 9.99
+
+two:
+  tax_number: MyString
+  store_code: MyString
+  name: MyString
+  discount: 9.99
+  plafond: 9.99
