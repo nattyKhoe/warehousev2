@@ -25,6 +25,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'active_model_serializers'
 #to validate timeline
 gem 'validates_timeliness'
+#adding faker
+gem 'faker'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
