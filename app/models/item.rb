@@ -1,6 +1,7 @@
 class Item < ApplicationRecord
     has_many :invoice_in_line_items
     has_many :invoice_out_line_items
+    belongs_to :manufacturer
 
     validates :item_name, presence: true
     validates :item_code, uniqueness: true
