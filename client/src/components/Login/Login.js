@@ -32,8 +32,8 @@ function Login({onLogin}){
     };
 
     return (
-        <div>
-          <h1>Login Page</h1>
+        <div className='container'>
+          <h1>Login</h1>
           <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="Username">Username:</label>
