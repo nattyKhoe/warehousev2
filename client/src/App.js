@@ -1,23 +1,44 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useEffect, useState} from 'react';
+import Login from './components/Login/Login';
+import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(true);
+  const [user, setUser] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [activePage, setActivePage] = useState(null);
+
+  //to save user in the system
+  useEffect(()=>{
+    fetch('/me')
+    .then((res)=>{
+      if (res.ok){
+        res.json().then((user)=> {
+          setLoggedIn(true)
+          setUser(user.first_name);
+          setAccount(user.account_type);
+        });
+      }
+    });
+  }, [])
+  
+  function handleLogin (user){
+    setUser(user.first_name);
+    setAccount(user.account_type);
+  }
+
+  function handleLogout() {
+    setUser(null);
+    setLoggedIn(false)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {loggedIn
+        ? <Dashboard user="Nat" />
+        : <Login onLogin={handleLogin}/>
+      }
     </div>
   );
 }
