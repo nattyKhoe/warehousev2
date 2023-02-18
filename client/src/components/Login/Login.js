@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import styles from './styles.css'
+import styles from './styles.css';
+import logo from '../../others/logo.png'
 
 function Login({onLogin}){
 
@@ -33,6 +34,7 @@ function Login({onLogin}){
 
     return (
         <div className='container'>
+          <img src={logo} alt="company-logo"/>
           <h1>Login</h1>
           <form onSubmit={handleSubmit}>
             <div>

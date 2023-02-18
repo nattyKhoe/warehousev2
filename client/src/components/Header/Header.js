@@ -1,5 +1,6 @@
 import NavBar from "../NavBar/NavBar";
 import styles from "./styles.css";
+import logo from '../../others/logo.png'
 
 
 function Header ({onLogout}) {
@@ -7,7 +8,7 @@ function Header ({onLogout}) {
         <header>
            <div className="nav-area">
             <a href="/" className="logo">
-            WarehouseV2
+            <img src={logo} alt="company-logo"/>
             </a>
             <NavBar />
             <button onClick={onLogout}>Logout</button>
