@@ -36,8 +36,8 @@ function App() {
   return (
     <div>
       {loggedIn
-        ? <Dashboard user="Nat" />
-        : <Login onLogin={handleLogin} onLogout={handleLogout}/>
+        ? <Dashboard user="Nat" onLogout={handleLogout}/>
+        : <Login onLogin={handleLogin}/>
       }
     </div>
   );
