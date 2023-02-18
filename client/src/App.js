@@ -37,7 +37,7 @@ function App() {
     <div>
       {loggedIn
         ? <Dashboard user="Nat" />
-        : <Login onLogin={handleLogin}/>
+        : <Login onLogin={handleLogin} onLogout={handleLogout}/>
       }
     </div>
   );

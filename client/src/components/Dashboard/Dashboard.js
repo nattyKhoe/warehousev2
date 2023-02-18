@@ -2,11 +2,11 @@ import React from "react";
 import Header from "../Header/Header";
 import styles from './styles.css';
 
-function Dashboard({user}) {
+function Dashboard({user, onLogout}) {
 
     return (
         <React.Fragment>
-            <Header/>
+            <Header onLogout={onLogout}/>
         </React.Fragment>
 
     );
