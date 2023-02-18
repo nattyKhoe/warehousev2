@@ -6,7 +6,14 @@ import Dashboard from './components/Dashboard/Dashboard';
 function App() {
   const [loggedIn, setLoggedIn] = useState(true);
   const [user, setUser] = useState(null);
-  const [account, setAccount] = useState(null);
+  //setup mock user first
+  const usermock = {
+    first_name: "Nat",
+    last_name: "admin",
+    username: "NatKhoe",
+    account_type:"admin",
+    date_of_birth: "29/12/1993",
+  }
   const [activePage, setActivePage] = useState(null);
 
   //to save user in the system
@@ -15,17 +22,15 @@ function App() {
     .then((res)=>{
       if (res.ok){
         res.json().then((user)=> {
-          setLoggedIn(true)
-          setUser(user.first_name);
-          setAccount(user.account_type);
+          setLoggedIn(true);
+          setUser(user);
         });
       }
     });
   }, [])
   
   function handleLogin (user){
-    setUser(user.first_name);
-    setAccount(user.account_type);
+    setUser(user);
   }
 
   function handleLogout() {
@@ -36,7 +41,7 @@ function App() {
   return (
     <div>
       {loggedIn
-        ? <Dashboard user="Nat" onLogout={handleLogout}/>
+        ? <Dashboard user={usermock} onLogout={handleLogout}/>
         : <Login onLogin={handleLogin}/>
       }
     </div>

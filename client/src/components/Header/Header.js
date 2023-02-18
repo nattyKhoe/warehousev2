@@ -3,9 +3,10 @@ import styles from "./styles.css";
 import logo from '../../others/logo.png'
 
 
-function Header ({onLogout}) {
+function Header ({onLogout, user}) {
     return(
         <header>
+            <h5>Hello {user}!</h5>
            <div className="nav-area">
             <a href="/" className="logo">
             <img src={logo} alt="company-logo"/>
