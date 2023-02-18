@@ -1,5 +1,6 @@
 class InvoiceOut < ApplicationRecord
     belongs_to :store
+    belongs_to :user
     has_many :invoice_out_line_items, dependent: :destroy
 
     validates :payment_method, inclusion: {in: %w(cash credit)}

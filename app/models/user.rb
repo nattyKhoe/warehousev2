@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+    has_many :invoice_ins
+    has_many :invoice_outs
+    
     before_validation :set_account_default
     has_secure_password
     
