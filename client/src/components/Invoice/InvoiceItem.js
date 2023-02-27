@@ -1,16 +1,16 @@
 import React from 'react';
 import InvoiceField from './InvoiceField';
 
-const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEdtiItem }) => {
+const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEditItem }) => {
   const deleteItemHandler = () => {
     onDeleteItem(id);
   };
 
   return (
     <tr>
-      <td className="w-full">
+      <td id="item-name">
         <InvoiceField
-          onEditItem={(event) => onEdtiItem(event)}
+          onEditItem={(event) => onEditItem(event)}
           cellData={{
             placeholder: 'Item name',
             type: 'text',
@@ -20,9 +20,9 @@ const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEdtiItem }) => {
           }}
         />
       </td>
-      <td className="min-w-[65px] md:min-w-[80px]">
+      <td id='item-qty'>
         <InvoiceField
-          onEditItem={(event) => onEdtiItem(event)}
+          onEditItem={(event) => onEditItem(event)}
           cellData={{
             type: 'number',
             min: '1',
@@ -32,10 +32,10 @@ const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEdtiItem }) => {
           }}
         />
       </td>
-      <td className="relative min-w-[100px] md:min-w-[150px]">
+      <td id='item-price'>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="absolute left-2 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-400 sm:left-4"
+          id="dollar-sign"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -48,9 +48,9 @@ const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEdtiItem }) => {
           />
         </svg>
         <InvoiceField
-          onEditItem={(event) => onEdtiItem(event)}
+          onEditItem={(event) => onEditItem(event)}
           cellData={{
-            className: 'text-right',
+            className: 'item-number',
             type: 'number',
             min: '0.01',
             step: '0.01',
@@ -60,14 +60,14 @@ const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEdtiItem }) => {
           }}
         />
       </td>
-      <td className="flex items-center justify-center">
+      <td id='item-button'>
         <button
-          className="rounded-md bg-red-500 p-2 text-white shadow-sm transition-colors duration-200 hover:bg-red-600"
+          id='delete-button'
           onClick={deleteItemHandler}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            id="delete-img"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

@@ -85,10 +85,10 @@ const InvoiceModal = ({
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-10 overflow-y-auto"
+        id='dialog'
         onClose={closeModal}
       >
-        <div className="min-h-screen px-4 text-center">
+        <div className="transition">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -98,12 +98,12 @@ const InvoiceModal = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-black/50" />
+            <Dialog.Overlay className="dialog-overlay" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
           <span
-            className="inline-block h-screen align-middle"
+            className="span"
             aria-hidden="true"
           >
             &#8203;
@@ -124,11 +124,11 @@ const InvoiceModal = ({
                 </h1>
                 <div className="mt-6">
                   <div className="mb-4 grid grid-cols-2">
-                    <span className="font-bold">Invoice Number:</span>
+                    <span className="title">Invoice Number:</span>
                     <span>{invoiceInfo.invoiceNumber}</span>
-                    <span className="font-bold">Cashier:</span>
+                    <span className="title">Cashier:</span>
                     <span>{invoiceInfo.cashierName}</span>
-                    <span className="font-bold">Customer:</span>
+                    <span className="title">Customer:</span>
                     <span>{invoiceInfo.customerName}</span>
                   </div>
 

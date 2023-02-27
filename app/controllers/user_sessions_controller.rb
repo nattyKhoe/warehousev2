@@ -4,9 +4,9 @@ class UserSessionsController < ApplicationController
         if user && user.authenticate(params[:password])
           session[:user_id] = user.id
           session[:account_type] = user.account_type
-          render json: { message: "Logged in successfully" }
+          render json: { message: "Logged in successfully" }, status: :ok
         else
-          render json: { message: "Invalid email or password" }, status: 401
+          render json: { message: "Invalid username or password" }, status: 401
         end
     end
     

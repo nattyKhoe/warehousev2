@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { uid } from 'uid';
 import InvoiceItem from './InvoiceItem';
 import InvoiceModal from './InvoiceModal';
-import incrementString from '../helpers/incrementString';
+import incrementString from '../../helpers/incrementString';
+import styles from './styles.css';
 const date = new Date();
 const today = date.toLocaleDateString('en-GB', {
   month: 'numeric',
@@ -62,7 +63,7 @@ function InvoiceInForm({user}){
       setItems((prevItem) => prevItem.filter((item) => item.id !== id));
     };
   
-    const edtiItemHandler = (event) => {
+    const editItemHandler = (event) => {
       const editedItem = {
         id: event.target.id,
         name: event.target.name,
@@ -92,24 +93,24 @@ function InvoiceInForm({user}){
 
     return(
     <form
-      className="relative flex flex-col px-2 md:flex-row"
+      className="form"
       onSubmit={reviewInvoiceHandler}
     >
-    <div className="my-6 flex-1 space-y-2  rounded-md bg-white p-4 shadow-sm sm:space-y-4 md:p-6">
+    <div className="invoice">
         {/* header */}
-        <div className="flex flex-col justify-between space-y-2 border-b border-gray-900/10 pb-4 md:flex-row md:items-center md:space-y-0">
+        <div className="header">
           
-          <div className="flex space-x-2">
-            <span className="font-bold">Current Date: </span>
+          <div className="number">
+            <span className="title">Current Date: </span>
             <span>{today}</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <label className="font-bold" htmlFor="invoiceNumber">
+          <div className="number">
+            <label className="title" htmlFor="invoiceNumber">
               Invoice Number:
             </label>
             <input
               required
-              className="max-w-[130px]"
+              className="invoiceNo"
               type="number"
               name="invoiceNumber"
               id="invoiceNumber"
@@ -119,33 +120,32 @@ function InvoiceInForm({user}){
             />
           </div>
         </div>
-        <h1 className="text-center text-lg font-bold">INVOICE</h1>
+        <h1 className="centre title inv">INVOICE</h1>
         {/* Cashier Name and Store address */}
-        <div className="grid grid-cols-2 gap-2 pt-4 pb-8">
+        <div className="details">
           <label
             htmlFor="cashierName"
-            className="text-sm font-bold sm:text-base"
+            className="cashier"
           >
             Cashier:
           </label>
           <input
-            required
-            className="flex-1"
+            className="input"
             placeholder={user.username}
             type="text"
             name="cashierName"
             id="cashierName"
-            value={cashierName}
+            value={user.username}
           />
           <label
             htmlFor="customerName"
-            className="col-start-2 row-start-1 text-sm font-bold md:text-base"
+            className="customer"
           >
             Customer:
           </label>
           <input
             required
-            className="flex-1"
+            className="input"
             placeholder="Customer name"
             type="text"
             name="customerName"
@@ -154,9 +154,9 @@ function InvoiceInForm({user}){
           />
         </div>
         {/* Items */}
-        <table className="w-full p-4 text-left">
+        <table className="table">
           <thead>
-            <tr className="border-b border-gray-900/10 text-sm md:text-base">
+            <tr className="row">
               <th>ITEM</th>
               <th>QTY</th>
               <th className="text-center">PRICE</th>
@@ -172,48 +172,48 @@ function InvoiceInForm({user}){
                 qty={item.qty}
                 price={item.price}
                 onDeleteItem={deleteItemHandler}
-                onEdtiItem={edtiItemHandler}
+                onEditItem={editItemHandler}
               />
             ))}
           </tbody>
         </table>
         <button
-          className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white shadow-sm hover:bg-blue-600"
+          className="add_button"
           type="button"
           onClick={addItemHandler}
         >
           Add Item
         </button>
         {/* subtotal and total */}
-        <div className="flex flex-col items-end space-y-2 pt-6">
-          <div className="flex w-full justify-between md:w-1/2">
-            <span className="font-bold">Subtotal:</span>
+        <div className="summary">
+          <div className="subsummary">
+            <span className="title">Subtotal:</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-          <div className="flex w-full justify-between md:w-1/2">
-            <span className="font-bold">Discount:</span>
+          <div className="subsummary">
+            <span className="title">Discount:</span>
             <span>
               ({discount || '0'}%)${discountRate.toFixed(2)}
             </span>
           </div>
-          <div className="flex w-full justify-between md:w-1/2">
-            <span className="font-bold">Tax:</span>
+          <div className="subsummary">
+            <span className="title">Tax:</span>
             <span>
               ({tax || '0'}%)${taxRate.toFixed(2)}
             </span>
           </div>
-          <div className="flex w-full justify-between border-t border-gray-900/10 pt-2 md:w-1/2">
-            <span className="font-bold">Total:</span>
-            <span className="font-bold">
+          <div className="total">
+            <span className="title">Total:</span>
+            <span className="title">
               ${total % 1 === 0 ? total : total.toFixed(2)}
             </span>
           </div>
         </div>
       </div>
-      <div className="basis-1/4 bg-transparent">
-        <div className="sticky top-0 z-10 space-y-4 divide-y divide-gray-900/10 pb-8 md:pt-6 md:pl-4">
+      <div className="footer">
+        <div className="subfooter-1">
           <button
-            className="w-full rounded-md bg-blue-500 py-2 text-sm text-white shadow-sm hover:bg-blue-600"
+            className="review_button"
             type="submit"
           >
             Review Invoice
@@ -233,14 +233,14 @@ function InvoiceInForm({user}){
             items={items}
             onAddNextInvoice={addNextInvoiceHandler}
           />
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <label className="text-sm font-bold md:text-base" htmlFor="tax">
+          <div className="subfooter-2">
+            <div className="subsub">
+              <label className="sub-label" htmlFor="tax">
                 Tax rate:
               </label>
-              <div className="flex items-center">
+              <div className="sub-value">
                 <input
-                  className="w-full rounded-r-none bg-white shadow-sm"
+                  className="sub-input"
                   type="number"
                   name="tax"
                   id="tax"
@@ -250,21 +250,21 @@ function InvoiceInForm({user}){
                   value={tax}
                   onChange={(event) => setTax(event.target.value)}
                 />
-                <span className="rounded-r-md bg-gray-200 py-2 px-4 text-gray-500 shadow-sm">
+                <span className="percent">
                   %
                 </span>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="subsub">
               <label
-                className="text-sm font-bold md:text-base"
+                className="sub-label"
                 htmlFor="discount"
               >
                 Discount rate:
               </label>
-              <div className="flex items-center">
+              <div className="sub-value">
                 <input
-                  className="w-full rounded-r-none bg-white shadow-sm"
+                  className="sub-input"
                   type="number"
                   name="discount"
                   id="discount"
@@ -274,7 +274,7 @@ function InvoiceInForm({user}){
                   value={discount}
                   onChange={(event) => setDiscount(event.target.value)}
                 />
-                <span className="rounded-r-md bg-gray-200 py-2 px-4 text-gray-500 shadow-sm">
+                <span className="percent">
                   %
                 </span>
               </div>

@@ -6,6 +6,8 @@ function Login({onLogin}){
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -29,7 +31,14 @@ function Login({onLogin}){
       if (response.ok) {
         response.json().then((user) => onLogin(user));
       }
+      if (!response.ok) {
+        const errorData = response.json();
+        throw new Error(errorData.message);
+      }
     })
+    .catch(error=>{
+      setError(error.message);
+    });
     };
 
     return (
@@ -45,6 +54,7 @@ function Login({onLogin}){
               <label htmlFor="password">Password:</label>
               <input type="password" id="password" name="password" value={password} onChange={handlePasswordChange} required />
             </div>
+            {error && <div>{error}</div>}
             <button type="submit">Login</button>
           </form>
         </div>

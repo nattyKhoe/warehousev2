@@ -16,8 +16,8 @@ Rails.application.routes.draw do
   resources :invoice_out_line_items, only: [:create, :destroy, :update]
 
 
-  post '/logout', to: 'user_sessions#destroy'
-  delete '/login',  to: 'user_sessions#create'
+  delete '/logout', to: 'user_sessions#destroy'
+  post '/login',  to: 'user_sessions#create'
   get '/me', to: 'users#show'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

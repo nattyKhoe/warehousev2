@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
     include ActionController::Cookies
+    skip_before_action :verify_authenticity_token
     rescue_from ActiveRecord::RecordInvalid, with: :render_record_invalid_response
     rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found_response
     

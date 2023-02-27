@@ -7,7 +7,7 @@ function Dashboard({user, onLogout}) {
 
     return (
         <React.Fragment>
-            <Header onLogout={onLogout} user={user.username}/>
+            <Header onLogout={onLogout} user={user}/>
             <InvoiceInForm user={user}/>
         </React.Fragment>
 

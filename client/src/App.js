@@ -4,16 +4,16 @@ import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   //setup mock user first
-  const usermock = {
-    first_name: "Nat",
-    last_name: "admin",
-    username: "NatKhoe",
-    account_type:"admin",
-    date_of_birth: "29/12/1993",
-  }
+  // const usermock = {
+  //   first_name: "Nat",
+  //   last_name: "admin",
+  //   username: "NatKhoe",
+  //   account_type:"admin",
+  //   date_of_birth: "29/12/1993",
+  // }
   const [activePage, setActivePage] = useState(null);
 
   //to save user in the system
@@ -22,26 +22,33 @@ function App() {
     .then((res)=>{
       if (res.ok){
         res.json().then((user)=> {
-          setLoggedIn(true);
           setUser(user);
         });
       }
     });
-  }, [])
+  }, [loggedIn])
   
-  function handleLogin (user){
+  function handleLogin(user){
+    setLoggedIn(true);
     setUser(user);
   }
 
   function handleLogout() {
     setUser(null);
-    setLoggedIn(false)
+    setLoggedIn(false);
+    fetch('/logout',{
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+    });
   }
 
   return (
     <div>
       {loggedIn
-        ? <Dashboard user={usermock} onLogout={handleLogout}/>
+        ? <Dashboard user={user} onLogout={handleLogout}/>
         : <Login onLogin={handleLogin}/>
       }
     </div>
