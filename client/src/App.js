@@ -1,7 +1,10 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
+import { Routes, Route } from "react-router-dom";
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
+import InvoiceInForm from './components/Invoice/Invoice'
+import PrivateRoute from './components/PrivateRoutes/PrivateRoutes';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -46,11 +49,33 @@ function App() {
   }
 
   return (
+    // <Routes>
+    //   <Route exact path ='/login'>
+    //     <Login onLogin={handleLogin}/>
+    //   </Route>
+    //   <PrivateRoute
+    //     exact path ='/dashboard'
+    //     component={Dashboard}
+    //     isAuthenticated={loggedIn}
+    //     onLogout={handleLogout}
+    //     user={user}
+    //     />
+    // </Routes>
     <div>
       {loggedIn
         ? <Dashboard user={user} onLogout={handleLogout}/>
         : <Login onLogin={handleLogin}/>
       }
+      {/* {loggedIn
+      ? (<Routes>
+                <Route exact path="/invoiceouts/new">
+                    <InvoiceInForm user={user}/>
+                </Route>
+                <Route exact path="/">
+                    <Dashboard/>
+                </Route>
+      </Routes>)
+      :<Login onLogin={handleLogin}/>} */}
     </div>
   );
 }

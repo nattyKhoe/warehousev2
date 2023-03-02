@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Dropdown from '../Dropdown/Dropdown';
 import InvoiceField from './InvoiceField';
 
-const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEditItem }) => {
+const InvoiceItem = ({ id, itemList, qty, price, onDeleteItem, onEditItem }) => {
   const deleteItemHandler = () => {
     onDeleteItem(id);
   };
 
+  // const [itemPrice, setItemPrice] = useState(null);
+  const [selectedValue, setSelectedValue] = useState('');
+
+
+
   return (
     <tr>
       <td id="item-name">
-        <InvoiceField
+        <Dropdown placeHolder="select item" options={itemList} selectedValue={selectedValue} setSelectedValue={setSelectedValue}/>
+        {/* <InvoiceField
           onEditItem={(event) => onEditItem(event)}
           cellData={{
             placeholder: 'Item name',
@@ -18,7 +25,7 @@ const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEditItem }) => {
             id: id,
             value: name,
           }}
-        />
+        /> */}
       </td>
       <td id='item-qty'>
         <InvoiceField
@@ -50,13 +57,11 @@ const InvoiceItem = ({ id, name, qty, price, onDeleteItem, onEditItem }) => {
         <InvoiceField
           onEditItem={(event) => onEditItem(event)}
           cellData={{
-            className: 'item-number',
-            type: 'number',
-            min: '0.01',
-            step: '0.01',
+            className: 'right',
+            // type: 'number',
             name: 'price',
             id: id,
-            value: price,
+            value: selectedValue.price,
           }}
         />
       </td>

@@ -1,11 +1,12 @@
 // https://github.com/hourmeng12/invoice-generator/
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { uid } from 'uid';
 import InvoiceItem from './InvoiceItem';
 import InvoiceModal from './InvoiceModal';
 import incrementString from '../../helpers/incrementString';
 import styles from './styles.css';
+import Dropdown from '../Dropdown/Dropdown';
 const date = new Date();
 const today = date.toLocaleDateString('en-GB', {
   month: 'numeric',
@@ -18,8 +19,9 @@ function InvoiceInForm({user}){
     const [discount, setDiscount] = useState('');
     const [tax, setTax] = useState('');
     const [invoiceNumber, setInvoiceNumber] = useState(1);
-    const [cashierName, setCashierName] = useState('');
-    const [customerName, setCustomerName] = useState('');
+    const [customerName, setCustomerName] = useState({});
+    // const [customerList, setCustomerList] = useState([]);
+    // const [itemList, setItemList] = useState([]);
     const [items, setItems] = useState([
       {
         id: uid(6),
@@ -90,6 +92,68 @@ function InvoiceInForm({user}){
     const taxRate = (tax * subtotal) / 100;
     const discountRate = (discount * subtotal) / 100;
     const total = subtotal - discountRate + taxRate;
+    // dropdown list index first
+    // get the stores list
+    // useEffect(()=>{
+    //   fetch('/stores', {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "Accept": "application/json",
+    //     }
+    //   })
+    //   .then(r =>{
+    //     if (r.ok) {
+    //       r.json().then(data=>setCustomerList(data))
+    //     }
+    //   })
+    // })
+
+    const customerList = [
+      {
+        tax_number:123542121,
+        store_code:132416546,
+        name: "one",
+        id:1,
+        discount: 0.1,
+        plafond: 500000000,
+        total_credit:1230000,
+        address:"zsxdfcgvhbnjm",
+        city:"sxdcfgvhbjnkm"
+    },
+    {
+      tax_number:123542121,
+      store_code:132416546,
+      name: "two",
+      id:2,
+      discount: 0.1,
+      plafond: 500000000,
+      total_credit:1230000,
+      address:"zsxdfcgvhbnjm",
+      city:"sxdcfgvhbjnkm"
+  }
+    ]
+
+    const itemList = [
+    {
+      item_code: "asdfgh",
+      name: "sunflower",
+      price: 2.99,
+      buying_price: 1.99,
+      stock: 100,
+      category: "garden",
+      manufacturer_id:1,
+    },
+    {
+      item_code: "xdcfgvjhbk",
+      name: "flower",
+      price: 2.99,
+      buying_price: 1.99,
+      stock: 200,
+      category: "garden",
+      manufacturer_id:2,
+    }
+    ]
 
     return(
     <form
@@ -129,29 +193,27 @@ function InvoiceInForm({user}){
           >
             Cashier:
           </label>
-          <input
+          <h4
+            className="input"
+            value={user.username}
+          >
+            {user.username}
+          </h4>
+          {/* <input
             className="input"
             placeholder={user.username}
             type="text"
             name="cashierName"
             id="cashierName"
             value={user.username}
-          />
+          /> */}
           <label
             htmlFor="customerName"
             className="customer"
           >
-            Customer:
+            Store:
           </label>
-          <input
-            required
-            className="input"
-            placeholder="Customer name"
-            type="text"
-            name="customerName"
-            id="customerName"
-            value={customerName}
-          />
+          <Dropdown className="input" placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName}/>
         </div>
         {/* Items */}
         <table className="table">
@@ -159,8 +221,8 @@ function InvoiceInForm({user}){
             <tr className="row">
               <th>ITEM</th>
               <th>QTY</th>
-              <th className="text-center">PRICE</th>
-              <th className="text-center">ACTION</th>
+              <th className="centre">PRICE</th>
+              <th className="centre">ACTION</th>
             </tr>
           </thead>
           <tbody>
@@ -169,6 +231,7 @@ function InvoiceInForm({user}){
                 key={item.id}
                 id={item.id}
                 name={item.name}
+                itemList={itemList}
                 qty={item.qty}
                 price={item.price}
                 onDeleteItem={deleteItemHandler}
@@ -223,13 +286,15 @@ function InvoiceInForm({user}){
             setIsOpen={setIsOpen}
             invoiceInfo={{
               invoiceNumber,
-              cashierName,
-              customerName,
+              // cashierName,
+              // customerName,
               subtotal,
               taxRate,
               discountRate,
               total,
             }}
+            customerName={customerName}
+            cashierName={user}
             items={items}
             onAddNextInvoice={addNextInvoiceHandler}
           />
