@@ -14,20 +14,23 @@ const today = date.toLocaleDateString('en-GB', {
   year: 'numeric',
 });
 
-function InvoiceInForm({user}){
+function InvoiceOutForm({user}){
     const [isOpen, setIsOpen] = useState(false);
     const [discount, setDiscount] = useState('');
     const [tax, setTax] = useState('');
-    const [invoiceNumber, setInvoiceNumber] = useState(1);
+    const [invoiceNumber, setInvoiceNumber] = useState('');
+    const [customerList, setCustomerList] = useState([]);
     const [customerName, setCustomerName] = useState({});
-    // const [customerList, setCustomerList] = useState([]);
-    // const [itemList, setItemList] = useState([]);
+    const [subtotal, setSubtotal] = useState(1.00);
+    const [error, setError] = useState('');
+    const [itemList, setItemList] = useState([]);
     const [items, setItems] = useState([
       {
         id: uid(6),
         name: '',
-        qty: 1,
+        item_id: '',
         price: '1.00',
+        qty: 1,
       },
     ]);
   
@@ -37,15 +40,20 @@ function InvoiceInForm({user}){
     };
   
     const addNextInvoiceHandler = () => {
-      setInvoiceNumber((prevNumber) => incrementString(prevNumber));
+      saveInvoiceOut();
+      saveItemLine(items);
+      fetchInvoiceNo();
+      // setInvoiceNumber((prevNumber) => incrementString(prevNumber));
       setItems([
         {
           id: uid(6),
-          name: '',
+          name:'',
+          item_id: '',
           qty: 1,
-          price: '1.00',
+          price: '0',
         },
       ]);
+      setCustomerName({});
     };
   
     const addItemHandler = () => {
@@ -54,6 +62,7 @@ function InvoiceInForm({user}){
         ...prevItem,
         {
           id: id,
+          item_id: '',
           name: '',
           qty: 1,
           price: '1.00',
@@ -65,101 +74,191 @@ function InvoiceInForm({user}){
       setItems((prevItem) => prevItem.filter((item) => item.id !== id));
     };
   
-    const editItemHandler = (event) => {
-      const editedItem = {
-        id: event.target.id,
-        name: event.target.name,
-        value: event.target.value,
-      };
-  
-      const newItems = items.map((items) => {
-        for (const key in items) {
-          if (key === editedItem.name && items.id === editedItem.id) {
-            items[key] = editedItem.value;
-          }
+    const editItemHandler = (id, item) => {
+      let newItems = [...items]
+      for (let i = 0; i < newItems.length ; i++){
+        if (newItems[i].id === id){
+          newItems[i] = item;
         }
-        return items;
-      });
+      }
+
+      // const editedItem = {
+      //   id: event.target.id,
+      //   name: event.target.name,
+      //   value: event.target.value,
+      // };
+  
+      // const newItems = items.map((items) => {
+      //   for (const key in items) {
+      //     if (key === editedItem.name && items.id === editedItem.id) {
+      //       items[key] = editedItem.value;
+      //     }
+      //   }
+      //   return items;
+      // });
   
       setItems(newItems);
     };
-  
-    const subtotal = items.reduce((prev, curr) => {
-      if (curr.name.trim().length > 0)
-        return prev + Number(curr.price * Math.floor(curr.qty));
-      else return prev;
-    }, 0);
+
+    const fetchInvoiceNo = () =>{
+      fetch('/invoice_outs/last',{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        }
+      })
+      .then(r =>{
+        if (r.ok){
+          r.json().then(data=>{setInvoiceNumber(data.id+1)});
+        } else {
+          setInvoiceNumber(1);
+        }
+      });
+    };
+
+    const saveItemLine = (items) =>{
+      for (let i = 0; i < items.length; i++) {
+        fetch('/invoice_out_line_items',{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body:JSON.stringify({
+            "quantity": items[i].qty,
+            "item_id": items[i].item_id
+          })
+          })
+          .then(res => {
+            if (!res.ok) {
+              const errorData = res.json();
+              throw new Error(errorData.message);
+            }
+          })
+          .catch(error=>{
+            setError(error.message);
+          });
+        };
+        
+      };
+
+    const saveInvoiceOut = () => {
+      fetch('/invoice_outs',{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body:JSON.stringify({
+          "invoice_number": invoiceNumber,
+          "date": {today},
+          "store_id": customerName.id,
+          "tax": tax,
+          "total": subtotal,
+          "grand_total": total,
+          "paid_status": false
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          const errorData = res.json();
+          throw new Error(errorData.message);
+        }
+      })
+      .catch(error=>{
+        setError(error.message);
+      });
+    };
+    
+
     const taxRate = (tax * subtotal) / 100;
     const discountRate = (discount * subtotal) / 100;
     const total = subtotal - discountRate + taxRate;
+
+    //Component did mount
     // dropdown list index first
     // get the stores list
-    // useEffect(()=>{
-    //   fetch('/stores', {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       "Accept": "application/json",
-    //     }
-    //   })
-    //   .then(r =>{
-    //     if (r.ok) {
-    //       r.json().then(data=>setCustomerList(data))
-    //     }
-    //   })
-    // })
+    useEffect(()=>{
+      //get store list
+      fetch('/stores', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        }
+      })
+      .then(r =>{
+        if (r.ok) {
+          r.json().then(data=>setCustomerList(data))
+        }
+      });
+      //get the last invoice number
+      fetchInvoiceNo();
+      //get the Item List
+      fetch('/items', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        }
+      })
+      .then(r =>{
+        if (r.ok) {
+          r.json().then(data=>setItemList(data))
+        }
+      });
+      console.log(itemList)
+    },[])
 
-    const customerList = [
-      {
-        tax_number:123542121,
-        store_code:132416546,
-        name: "one",
-        id:1,
-        discount: 0.1,
-        plafond: 500000000,
-        total_credit:1230000,
-        address:"zsxdfcgvhbnjm",
-        city:"sxdcfgvhbjnkm"
-    },
-    {
-      tax_number:123542121,
-      store_code:132416546,
-      name: "two",
-      id:2,
-      discount: 0.1,
-      plafond: 500000000,
-      total_credit:1230000,
-      address:"zsxdfcgvhbnjm",
-      city:"sxdcfgvhbjnkm"
-  }
-    ]
 
-    const itemList = [
-    {
-      item_code: "asdfgh",
-      name: "sunflower",
-      price: 2.99,
-      buying_price: 1.99,
-      stock: 100,
-      category: "garden",
-      manufacturer_id:1,
-    },
-    {
-      item_code: "xdcfgvjhbk",
-      name: "flower",
-      price: 2.99,
-      buying_price: 1.99,
-      stock: 200,
-      category: "garden",
-      manufacturer_id:2,
-    }
-    ]
+    // component did update
+    useEffect(()=>{
+      setDiscount(customerName.discount)
+    },[customerName])
+
+    // setSubtotal everytime item changes;
+    useEffect(()=>{
+      let sub = 0;
+      if (items.length > 0) {
+        for (let i =0 ; i < items.length; i++){
+          sub += items[i].price*items[i].qty
+        }
+      }
+      setSubtotal(sub);
+      
+    }, [items])
+
+
+    // const itemList = [
+    // {
+    //   item_code: "asdfgh",
+    //   item_id:1,
+    //   name: "sunflower",
+    //   price: 2.99,
+    //   buying_price: 1.99,
+    //   stock: 100,
+    //   category: "garden",
+    //   manufacturer_id:1,
+    // },
+    // {
+    //   item_code: "xdcfgvjhbk",
+    //   item_id: 2,
+    //   name: "flower",
+    //   price: 2.99,
+    //   buying_price: 1.99,
+    //   stock: 200,
+    //   category: "garden",
+    //   manufacturer_id:2,
+    // }
+    // ]
 
     return(
     <form
       className="form"
       onSubmit={reviewInvoiceHandler}
     >
+    {error && <div>{error}</div>}
     <div className="invoice">
         {/* header */}
         <div className="header">
@@ -172,16 +271,9 @@ function InvoiceInForm({user}){
             <label className="title" htmlFor="invoiceNumber">
               Invoice Number:
             </label>
-            <input
-              required
-              className="invoiceNo"
-              type="number"
-              name="invoiceNumber"
-              id="invoiceNumber"
-              min="1"
-              step="1"
-              value={invoiceNumber}
-            />
+            <span className='invoiceNo'>
+            {invoiceNumber}
+            </span>
           </div>
         </div>
         <h1 className="centre title inv">INVOICE</h1>
@@ -199,14 +291,6 @@ function InvoiceInForm({user}){
           >
             {user.username}
           </h4>
-          {/* <input
-            className="input"
-            placeholder={user.username}
-            type="text"
-            name="cashierName"
-            id="cashierName"
-            value={user.username}
-          /> */}
           <label
             htmlFor="customerName"
             className="customer"
@@ -281,23 +365,26 @@ function InvoiceInForm({user}){
           >
             Review Invoice
           </button>
-          <InvoiceModal
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            invoiceInfo={{
-              invoiceNumber,
-              // cashierName,
-              // customerName,
-              subtotal,
-              taxRate,
-              discountRate,
-              total,
-            }}
-            customerName={customerName}
-            cashierName={user}
-            items={items}
-            onAddNextInvoice={addNextInvoiceHandler}
-          />
+          {/* reviewed Invoice conditional */}
+          {isOpen
+          ?<InvoiceModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          invoiceInfo={{
+            invoiceNumber,
+            // cashierName,
+            // customerName,
+            subtotal,
+            taxRate,
+            discountRate,
+            total,
+          }}
+          customerName={customerName}
+          cashierName={user}
+          items={items}
+          onAddNextInvoice={addNextInvoiceHandler}/>
+          :null}
+          
           <div className="subfooter-2">
             <div className="subsub">
               <label className="sub-label" htmlFor="tax">
@@ -328,17 +415,15 @@ function InvoiceInForm({user}){
                 Discount rate:
               </label>
               <div className="sub-value">
-                <input
+                <label
                   className="sub-input"
                   type="number"
                   name="discount"
                   id="discount"
-                  min="0"
-                  step="0.01"
-                  placeholder="0.0"
                   value={discount}
-                  onChange={(event) => setDiscount(event.target.value)}
-                />
+                >
+                {discount}
+                </label>
                 <span className="percent">
                   %
                 </span>
@@ -350,4 +435,4 @@ function InvoiceInForm({user}){
     </form>
     )
 }
-export  default InvoiceInForm;
+export  default InvoiceOutForm;

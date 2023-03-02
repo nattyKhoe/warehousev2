@@ -25,6 +25,11 @@ class InvoiceInsController < ApplicationController
         render @invoice_in, status: :accepted
     end
 
+    def last
+        invoice_in = InvoiceIn.last
+        render invoice_in, status::ok
+    end
+
     private
     def invoice_in_params
         params.permit(:invoice_number, :date, :manufacturer_id, :due_date, :paid_status)

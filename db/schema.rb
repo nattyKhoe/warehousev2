@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_18_100912) do
+ActiveRecord::Schema.define(version: 2023_03_02_131836) do
 
   create_table "invoice_in_line_items", force: :cascade do |t|
     t.integer "quantity"
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 2023_02_18_100912) do
 
   create_table "items", force: :cascade do |t|
     t.string "item_code"
-    t.string "item_name"
+    t.string "name"
     t.decimal "price", precision: 10, scale: 3, default: "0.0"
     t.decimal "buying_price", precision: 10, scale: 3, default: "0.0"
     t.integer "stock"

@@ -23,8 +23,8 @@ class InvoiceOutLineItemsController < ApplicationController
         @line_item = InvoiceOutLineItem.find(params[:id])
     end
 
-    def set_invoice_in
-        @invoice_in = InvoiceOut.find(params[:id])
+    def set_invoice_out
+        @invoice_out = InvoiceOut.find(params[:id])
     end
 
     def line_item_params

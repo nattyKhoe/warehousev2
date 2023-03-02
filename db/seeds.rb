@@ -36,6 +36,18 @@
 # )
 require 'faker'
 
+# 10.times do 
+#     Item.create!(
+#         item_code: Faker::Alphanumeric.alpha(number: 10),
+#         name: Faker::Commerce.product_name,
+#         buying_price: Faker::Commerce.price(range: 0.99..10.0),
+#         price:Faker::Commerce.price(range: 10.00..19.99),
+#         stock: 5000,
+#         category: Faker::Commerce.department(max: 1),
+#         manufacturer_id: rand(1..7)
+#     ) 
+# end
+
 # 5.times do 
 #     Manufacturer.create!(
 #         tax_number: Faker::Company.australian_business_number,

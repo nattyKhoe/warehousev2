@@ -1,6 +1,10 @@
 class ItemsController < ApplicationController
     before_action :set_item, only: [:show, :update]
 
+    def index
+        render json: Item.all, status: :ok
+    end
+    
     def show
         render json: @item, status: :ok
     end

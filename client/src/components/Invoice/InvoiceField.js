@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InvoiceField = ({ onEditItem, cellData }) => {
+const InvoiceField = ({ handleChange, cellData }) => {
   return (
     <input
       className={cellData.className}
@@ -12,7 +12,7 @@ const InvoiceField = ({ onEditItem, cellData }) => {
       name={cellData.name}
       id={cellData.id}
       value={cellData.value}
-      onChange={onEditItem}
+      onChange={handleChange}
       required
     />
   );

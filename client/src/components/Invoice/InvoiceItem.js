@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from '../Dropdown/Dropdown';
 import InvoiceField from './InvoiceField';
 
-const InvoiceItem = ({ id, itemList, qty, price, onDeleteItem, onEditItem }) => {
+const InvoiceItem = ({ id, itemList, qty, onDeleteItem, onEditItem }) => {
   const deleteItemHandler = () => {
     onDeleteItem(id);
   };
 
   // const [itemPrice, setItemPrice] = useState(null);
-  const [selectedValue, setSelectedValue] = useState('');
-
+  // const [item, setItem] = useState('');
+  const [selectedValue, setSelectedValue] = useState ({})
+  const [quantity, setQuantity] = useState(1);
+  useEffect(()=>{
+    onEditItem(id, 
+      {
+        id: id,
+        name: selectedValue.name,
+        item_id: selectedValue.item_id,
+        item_code: selectedValue.item_code,
+        price: selectedValue.price,
+        qty: quantity
+      }
+    );
+  }, [selectedValue, quantity])
 
 
   return (
@@ -29,13 +42,13 @@ const InvoiceItem = ({ id, itemList, qty, price, onDeleteItem, onEditItem }) => 
       </td>
       <td id='item-qty'>
         <InvoiceField
-          onEditItem={(event) => onEditItem(event)}
+          handleChange={(event) => setQuantity(event.target.value)}
           cellData={{
             type: 'number',
             min: '1',
             name: 'qty',
             id: id,
-            value: qty,
+            value: quantity,
           }}
         />
       </td>
@@ -54,8 +67,11 @@ const InvoiceItem = ({ id, itemList, qty, price, onDeleteItem, onEditItem }) => 
             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <InvoiceField
-          onEditItem={(event) => onEditItem(event)}
+        <div className='right' id={id}>
+          {selectedValue.price}
+        </div>
+        {/* <InvoiceField
+          // onEditItem={(event) => onEditItem(event)}
           cellData={{
             className: 'right',
             // type: 'number',
@@ -63,7 +79,7 @@ const InvoiceItem = ({ id, itemList, qty, price, onDeleteItem, onEditItem }) => 
             id: id,
             value: selectedValue.price,
           }}
-        />
+        /> */}
       </td>
       <td id='item-button'>
         <button

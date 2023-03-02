@@ -25,9 +25,14 @@ class InvoiceOutsController < ApplicationController
         head :no_content
     end
 
+    def last
+        invoice_out = InvoiceOut.last
+        render invoice_out, status::ok
+    end
+
     private
     def invoice_out_params
-        params.permit(:invoice_no, :date, :store_id, :due_date, :tax, :total,
+        params.permit(:invoice_number, :date, :store_id, :due_date, :tax, :total,
         :grand_total, :paid_status)
     end
 

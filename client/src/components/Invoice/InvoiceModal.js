@@ -84,7 +84,7 @@ const InvoiceModal = ({
   };
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
         id='dialog'
@@ -123,15 +123,7 @@ const InvoiceModal = ({
               <div className="invoice-sub-container" id="print">
                 <h1 className="invoice-title">
                   INVOICE
-                </h1>
-                <div className="invoice-sub-info">
-                    <span className="title">Invoice Number:</span>
-                    <span>{invoiceInfo.invoiceNumber}</span>
-                    <span className="title">Cashier:</span>
-                    <span>{cashierName.username}</span>
-                    <span className="title">Customer:</span>
-                    <span>{customerName.name}</span>
-                  </div>                
+                </h1>               
                 <div className="invoice-info">
                   <div className="invoice-sub-info">
                     <span className="title">Invoice Number:</span>
@@ -219,7 +211,7 @@ const InvoiceModal = ({
                   onClick={addNextInvoiceHandler}
                   className="invoice-button"
                 >
-                  {/* <svg
+                  <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4"
                     fill="none"
@@ -232,8 +224,8 @@ const InvoiceModal = ({
                       strokeWidth={2}
                       d="M13 5l7 7-7 7M5 5l7 7-7 7"
                     />
-                  </svg> */}
-                  <span>Exit</span>
+                  </svg>
+                  <span>Save and Next</span>
                 </button>
               </div>
             </div>
@@ -241,7 +233,9 @@ const InvoiceModal = ({
         </div>
       </Dialog>
     </Transition>
+
   );
+    
 };
 
 export default InvoiceModal;
