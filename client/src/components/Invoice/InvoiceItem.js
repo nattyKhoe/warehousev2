@@ -16,7 +16,7 @@ const InvoiceItem = ({ id, itemList, qty, onDeleteItem, onEditItem }) => {
       {
         id: id,
         name: selectedValue.name,
-        item_id: selectedValue.item_id,
+        item_id: selectedValue.id,
         item_code: selectedValue.item_code,
         price: selectedValue.price,
         qty: quantity

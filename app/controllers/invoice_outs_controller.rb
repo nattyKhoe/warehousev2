@@ -17,7 +17,7 @@ class InvoiceOutsController < ApplicationController
 
     def update
         @invoice_out.update!(invoice_out_params)
-        render json: invoice_out, status: :accepted
+        render json: @invoice_out, status: :accepted
     end
 
     def destroy
@@ -26,14 +26,15 @@ class InvoiceOutsController < ApplicationController
     end
 
     def last
-        invoice_out = InvoiceOut.last
-        render invoice_out, status::ok
+        invoice = InvoiceOut.last
+        new_invoice_id = invoice.present? ?invoice.id+1 :1
+        render json: new_invoice_id, status: :ok
     end
 
     private
     def invoice_out_params
-        params.permit(:invoice_number, :date, :store_id, :due_date, :tax, :total,
-        :grand_total, :paid_status)
+        params.permit(:invoice_number, :date, :store_id, :tax, :total,
+        :grand_total, :paid_status, :discount)
     end
 
     def set_invoice_out

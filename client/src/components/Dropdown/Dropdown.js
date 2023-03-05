@@ -12,7 +12,6 @@ function Icon() {
 
 function Dropdown({ placeHolder, options, selectedValue, setSelectedValue }){
     const [showMenu, setShowMenu] = useState(false);
-    // const [selectedValue, setSelectedValue] = useState('');
 
     useEffect(() =>{
         function handler(){setShowMenu(false)};

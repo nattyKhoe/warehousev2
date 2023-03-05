@@ -23,10 +23,11 @@ const InvoiceModal = ({
 
   const SaveAsPDFHandler = () => {
     const dom = document.getElementById('print');
+    console.log(dom)
     toPng(dom)
       .then((dataUrl) => {
         const img = new Image();
-        img.crossOrigin = 'annoymous';
+        img.crossOrigin = 'anonymous';
         img.src = dataUrl;
         img.onload = () => {
           // Initialize the PDF.
@@ -38,6 +39,7 @@ const InvoiceModal = ({
 
           // Define reused data
           const imgProps = pdf.getImageProperties(img);
+          console.log(imgProps);
           const imageType = imgProps.fileType;
           const pdfWidth = pdf.internal.pageSize.getWidth();
 
@@ -123,7 +125,8 @@ const InvoiceModal = ({
               <div className="invoice-sub-container" id="print">
                 <h1 className="invoice-title">
                   INVOICE
-                </h1>               
+                </h1>
+                            
                 <div className="invoice-info">
                   <div className="invoice-sub-info">
                     <span className="title">Invoice Number:</span>

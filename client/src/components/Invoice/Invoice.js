@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { uid } from 'uid';
 import InvoiceItem from './InvoiceItem';
 import InvoiceModal from './InvoiceModal';
-import incrementString from '../../helpers/incrementString';
+// import incrementString from '../../helpers/incrementString';
 import styles from './styles.css';
 import Dropdown from '../Dropdown/Dropdown';
 const date = new Date();
@@ -33,18 +33,61 @@ function InvoiceOutForm({user}){
         qty: 1,
       },
     ]);
+    const [reset, setReset] = useState([false]);
   
     const reviewInvoiceHandler = (event) => {
       event.preventDefault();
       setIsOpen(true);
     };
   
-    const addNextInvoiceHandler = () => {
-      saveInvoiceOut();
-      saveItemLine(items);
+    const addNextInvoiceHandler = async() => {
+      const response = await fetch('/invoice_outs',{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body:JSON.stringify({
+            "invoice_number": invoiceNumber,
+            "date": today,
+            "store_id": customerName.id,
+            "tax": tax,
+            "total": subtotal,
+            "discount": discount,
+            "grand_total": total,
+            "paid_status": false
+          })
+        })
+      const data = await response.json()
+        .catch(error=>{
+          setError(error.message);
+        });
+      console.log(data);
+      const inv_id = await data.id;
+      for (const lineItem of items){
+        let item = {
+          quantity: lineItem.qty,
+          price: lineItem.price,
+          item_id: lineItem.item_id,
+        }
+
+        console.log(item);
+
+        fetch(`invoice_outs/${inv_id}/invoice_out_line_items`, {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(item),
+        });
+      }
+
+      setReset(true);
+      };
+    
+    const resetForm = () => {
       fetchInvoiceNo();
-      // setInvoiceNumber((prevNumber) => incrementString(prevNumber));
-      setItems([
+        setItems([
         {
           id: uid(6),
           name:'',
@@ -53,9 +96,13 @@ function InvoiceOutForm({user}){
           price: '0',
         },
       ]);
-      setCustomerName({});
-    };
-  
+        setCustomerName({});
+        setIsOpen(false);
+        setDiscount('');
+        setTax('');
+        setReset(false);
+    }
+
     const addItemHandler = () => {
       const id = uid(6);
       setItems((prevItem) => [
@@ -81,27 +128,12 @@ function InvoiceOutForm({user}){
           newItems[i] = item;
         }
       }
-
-      // const editedItem = {
-      //   id: event.target.id,
-      //   name: event.target.name,
-      //   value: event.target.value,
-      // };
-  
-      // const newItems = items.map((items) => {
-      //   for (const key in items) {
-      //     if (key === editedItem.name && items.id === editedItem.id) {
-      //       items[key] = editedItem.value;
-      //     }
-      //   }
-      //   return items;
-      // });
   
       setItems(newItems);
     };
 
     const fetchInvoiceNo = () =>{
-      fetch('/invoice_outs/last',{
+      fetch('/invoice_outs_last',{
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -110,67 +142,13 @@ function InvoiceOutForm({user}){
       })
       .then(r =>{
         if (r.ok){
-          r.json().then(data=>{setInvoiceNumber(data.id+1)});
-        } else {
-          setInvoiceNumber(1);
-        }
-      });
-    };
-
-    const saveItemLine = (items) =>{
-      for (let i = 0; i < items.length; i++) {
-        fetch('/invoice_out_line_items',{
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          body:JSON.stringify({
-            "quantity": items[i].qty,
-            "item_id": items[i].item_id
-          })
-          })
-          .then(res => {
-            if (!res.ok) {
-              const errorData = res.json();
-              throw new Error(errorData.message);
-            }
-          })
-          .catch(error=>{
-            setError(error.message);
-          });
+          r.json().then(data=>{
+            setInvoiceNumber(data)});
         };
-        
-      };
-
-    const saveInvoiceOut = () => {
-      fetch('/invoice_outs',{
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body:JSON.stringify({
-          "invoice_number": invoiceNumber,
-          "date": {today},
-          "store_id": customerName.id,
-          "tax": tax,
-          "total": subtotal,
-          "grand_total": total,
-          "paid_status": false
-        })
-      })
-      .then(res => {
-        if (!res.ok) {
-          const errorData = res.json();
-          throw new Error(errorData.message);
-        }
-      })
-      .catch(error=>{
-        setError(error.message);
       });
     };
-    
+
+   
 
     const taxRate = (tax * subtotal) / 100;
     const discountRate = (discount * subtotal) / 100;
@@ -208,9 +186,7 @@ function InvoiceOutForm({user}){
           r.json().then(data=>setItemList(data))
         }
       });
-      console.log(itemList)
     },[])
-
 
     // component did update
     useEffect(()=>{
@@ -229,29 +205,11 @@ function InvoiceOutForm({user}){
       
     }, [items])
 
+    // setting reset
 
-    // const itemList = [
-    // {
-    //   item_code: "asdfgh",
-    //   item_id:1,
-    //   name: "sunflower",
-    //   price: 2.99,
-    //   buying_price: 1.99,
-    //   stock: 100,
-    //   category: "garden",
-    //   manufacturer_id:1,
-    // },
-    // {
-    //   item_code: "xdcfgvjhbk",
-    //   item_id: 2,
-    //   name: "flower",
-    //   price: 2.99,
-    //   buying_price: 1.99,
-    //   stock: 200,
-    //   category: "garden",
-    //   manufacturer_id:2,
-    // }
-    // ]
+    useEffect(()=>{
+      resetForm();
+    }, [reset===true]);
 
     return(
     <form
@@ -297,7 +255,7 @@ function InvoiceOutForm({user}){
           >
             Store:
           </label>
-          <Dropdown className="input" placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName}/>
+          {reset === false && <Dropdown className="input" placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName}/>}
         </div>
         {/* Items */}
         <table className="table">
@@ -310,7 +268,7 @@ function InvoiceOutForm({user}){
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
+            {reset===false && items.map((item) => (
               <InvoiceItem
                 key={item.id}
                 id={item.id}
@@ -359,12 +317,7 @@ function InvoiceOutForm({user}){
       </div>
       <div className="footer">
         <div className="subfooter-1">
-          <button
-            className="review_button"
-            type="submit"
-          >
-            Review Invoice
-          </button>
+         
           {/* reviewed Invoice conditional */}
           {isOpen
           ?<InvoiceModal
@@ -429,6 +382,12 @@ function InvoiceOutForm({user}){
                 </span>
               </div>
             </div>
+          <button
+            className="review_button"
+            type="submit"
+          >
+            Review Invoice
+          </button>
           </div>
         </div>
       </div>
