@@ -1,22 +1,17 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import Header from './components/Header/Header';
+import InvoiceOutForm from './components/Invoice/Invoice';
+
 
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  //setup mock user first
-  // const usermock = {
-  //   first_name: "Nat",
-  //   last_name: "admin",
-  //   username: "NatKhoe",
-  //   account_type:"admin",
-  //   date_of_birth: "29/12/1993",
-  // }
-  const [activePage, setActivePage] = useState(null);
 
   //to save user in the system
   useEffect(()=>{
@@ -28,26 +23,65 @@ function App() {
         });
       }
     });
-  }, [loggedIn])
+  }, [loggedIn===true])//
   
-  function handleLogin(user){
+  function handleLogin (user){
     setLoggedIn(true);
     setUser(user);
   }
+  
 
   function handleLogout() {
-    setUser(null);
-    setLoggedIn(false);
     fetch('/logout',{
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
-    });
+    })
+    .then(()=>{
+      setUser(null);
+      setLoggedIn(false);
+    }).then(()=><Navigate to='/'/>);
+    
   }
 
   return (
+    <div>
+    {console.log(user)}
+    {user? <Header user={user} onLogout={handleLogout}/> : null }
+    <BrowserRouter>
+    <Routes>
+      <Route exact path='/'
+      element={user?<Dashboard/> :<Login onLogin={handleLogin}/>}/>
+
+      <Route exact path ='/invoiceouts/new'
+        element={user? <InvoiceOutForm user={user}/>:<Login onLogin={handleLogin}/>} />
+      {/* <Route exact path='/logout'
+      element={<Logout handleLogin={handleLogin}/>} /> */}
+      {/* <Route exact path='' */}
+      {/* element={loggedIn ?<Dashboard user={user} onLogout={handleLogout}/> :<Login onLogin={handleLogin}/>}/> */}
+      {/* <Route index exact path='/' element={
+          <PrivateRoute user={user}>
+            <Dashboard user={user} onLogout={handleLogout}/>
+          </PrivateRoute>
+      }/>  */}
+    </Routes>
+    </BrowserRouter>
+
+    {/* <BrowserRouter>
+      
+      <Routes>
+        <Route path='/login' element={<Login onLogin={handleLogin}/>}/>
+        {/* <Route path='/dashboard' element={
+          <PrivateRoute loggedIn={loggedIn}>
+            <Dashboard user={user} onLogout={handleLogout}/>
+          </PrivateRoute>
+        }/> 
+      </Routes>
+    </BrowserRouter> */}
+    </div>
+      
     // <Routes>
     //   <Route exact path ='/login'>
     //     <Login onLogin={handleLogin}/>
@@ -60,22 +94,22 @@ function App() {
     //     user={user}
     //     />
     // </Routes>
-    <div>
-      {loggedIn
-        ? <Dashboard user={user} onLogout={handleLogout}/>
-        : <Login onLogin={handleLogin}/>
-      }
-      {/* {loggedIn
-      ? (<Routes>
-                <Route exact path="/invoiceouts/new">
-                    <InvoiceInForm user={user}/>
-                </Route>
-                <Route exact path="/">
-                    <Dashboard/>
-                </Route>
-      </Routes>)
-      :<Login onLogin={handleLogin}/>} */}
-    </div>
+    // <div>
+    //   {loggedIn
+    //     ? <Dashboard user={user} onLogout={handleLogout}/>
+    //     : <Login onLogin={handleLogin}/>
+    //   }
+    //   {/* {loggedIn
+    //   ? (<Routes>
+    //             <Route exact path="/invoiceouts/new">
+    //                 <InvoiceInForm user={user}/>
+    //             </Route>
+    //             <Route exact path="/">
+    //                 <Dashboard/>
+    //             </Route>
+    //   </Routes>)
+    //   :<Login onLogin={handleLogin}/>} */}
+    // </div>
   );
 }
 

@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../Header/Header";
-import InvoiceOutForm from "../Invoice/Invoice";
 import styles from './styles.css';
 
 
@@ -8,8 +6,7 @@ function Dashboard({user, onLogout}) {
 
     return (
         <React.Fragment>
-            <Header onLogout={onLogout} user={user}/>
-            <InvoiceOutForm user={user}/>
+            <h1>Welcome to Warehouse v2! Follow the navbar to navigate your way</h1>
         </React.Fragment>
     );
 }

@@ -29,7 +29,9 @@ function Login({onLogin}){
     })
     .then(response => {
       if (response.ok) {
-        response.json().then((user) => onLogin(user));
+        response.json().then((user) =>{
+          onLogin(user);
+        });
       }
       if (!response.ok) {
         const errorData = response.json();

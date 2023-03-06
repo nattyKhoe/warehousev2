@@ -29,3 +29,6 @@
   h5{
     text-align: right;
   }
+  .hidden{
+    display: none;
+  }
