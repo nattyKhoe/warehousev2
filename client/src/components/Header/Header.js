@@ -9,9 +9,9 @@ function Header ({onLogout, user}) {
 
     useEffect(()=>{
         setName(user.first_name);
-    }, [])
+    }, [user])
     return(
-        <header className={user?"appear":"hidden"}>
+        <header>
             <h5>Hello {name}!</h5>
            <div className="nav-area">
             <a href="/" className="logo">

@@ -1,11 +1,8 @@
-h1{
-    text-align: center;
-    
-}
-
-#dashboard-container{
+#container{
     padding: 50% 0;
     margin: auto;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
+

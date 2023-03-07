@@ -3,9 +3,9 @@ import React, {useEffect, useState} from 'react';
 import { Routes, Route, Navigate} from "react-router-dom";
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
-import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Header from './components/Header/Header';
 import InvoiceOutForm from './components/Invoice/Invoice';
+import NotFound from './components/NotFound/NotFound';
 
 
 
@@ -56,58 +56,13 @@ function App() {
 
       <Route exact path ='/invoiceouts/new'
         element={user? <InvoiceOutForm user={user}/>:<Login onLogin={handleLogin}/>} />
-      {/* <Route exact path='/logout'
-      element={<Logout handleLogin={handleLogin}/>} /> */}
-      {/* <Route exact path='' */}
-      {/* element={loggedIn ?<Dashboard user={user} onLogout={handleLogout}/> :<Login onLogin={handleLogin}/>}/> */}
-      {/* <Route index exact path='/' element={
-          <PrivateRoute user={user}>
-            <Dashboard user={user} onLogout={handleLogout}/>
-          </PrivateRoute>
-      }/>  */}
+
+      <Route path='*' element={<NotFound/>}/>
     </Routes>
 
-    {/* <BrowserRouter>
-      
-      <Routes>
-        <Route path='/login' element={<Login onLogin={handleLogin}/>}/>
-        {/* <Route path='/dashboard' element={
-          <PrivateRoute loggedIn={loggedIn}>
-            <Dashboard user={user} onLogout={handleLogout}/>
-          </PrivateRoute>
-        }/> 
-      </Routes>
-    </BrowserRouter> */}
+    
     </div>
-      
-    // <Routes>
-    //   <Route exact path ='/login'>
-    //     <Login onLogin={handleLogin}/>
-    //   </Route>
-    //   <PrivateRoute
-    //     exact path ='/dashboard'
-    //     component={Dashboard}
-    //     isAuthenticated={loggedIn}
-    //     onLogout={handleLogout}
-    //     user={user}
-    //     />
-    // </Routes>
-    // <div>
-    //   {loggedIn
-    //     ? <Dashboard user={user} onLogout={handleLogout}/>
-    //     : <Login onLogin={handleLogin}/>
-    //   }
-    //   {/* {loggedIn
-    //   ? (<Routes>
-    //             <Route exact path="/invoiceouts/new">
-    //                 <InvoiceInForm user={user}/>
-    //             </Route>
-    //             <Route exact path="/">
-    //                 <Dashboard/>
-    //             </Route>
-    //   </Routes>)
-    //   :<Login onLogin={handleLogin}/>} */}
-    // </div>
+    
   );
 }
 

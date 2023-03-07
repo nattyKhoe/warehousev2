@@ -34,7 +34,7 @@ class InvoiceOutsController < ApplicationController
     private
     def invoice_out_params
         params.permit(:invoice_number, :date, :store_id, :tax, :total,
-        :grand_total, :paid_status, :discount)
+        :grand_total, :paid_status, :discount, :user_id)
     end
 
     def set_invoice_out

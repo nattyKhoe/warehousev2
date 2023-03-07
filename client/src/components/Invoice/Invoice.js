@@ -55,7 +55,8 @@ function InvoiceOutForm({user}){
             "total": subtotal,
             "discount": discount,
             "grand_total": total,
-            "paid_status": false
+            "paid_status": false,
+            "user_id": user.id
           })
         })
       const data = await response.json()
