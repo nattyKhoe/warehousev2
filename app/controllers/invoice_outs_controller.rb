@@ -11,7 +11,7 @@ class InvoiceOutsController < ApplicationController
 
     def create
         invoice_out = InvoiceOut.create!(invoice_out_params)
-        invoice_out.selling
+        # invoice_out.selling
         render json: invoice_out, status: :created
     end
 

@@ -23,6 +23,7 @@ function InvoiceOutForm({user}){
     const [customerName, setCustomerName] = useState({});
     const [subtotal, setSubtotal] = useState(1.00);
     const [error, setError] = useState('');
+    const [message, setMessage] = useState(null);
     const [itemList, setItemList] = useState([]);
     const [items, setItems] = useState([
       {
@@ -37,54 +38,66 @@ function InvoiceOutForm({user}){
   
     const reviewInvoiceHandler = (event) => {
       event.preventDefault();
-      setIsOpen(true);
+      if (items[0].item_id && customerName.id) {
+        setIsOpen(true);
+      }
+
+      if(!items[0].item_id){
+          setError("Please Input the Item");
+        }
+      if(!customerName.id){
+          setError("The store details are missing, please select a store")
+        }
+    
     };
   
     const addNextInvoiceHandler = async() => {
       const response = await fetch('/invoice_outs',{
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          body:JSON.stringify({
-            "invoice_number": invoiceNumber,
-            "date": today,
-            "store_id": customerName.id,
-            "tax": tax,
-            "total": subtotal,
-            "discount": discount,
-            "grand_total": total,
-            "paid_status": false,
-            "user_id": user.id
-          })
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body:JSON.stringify({
+          "invoice_number": invoiceNumber,
+          "date": today,
+          "store_id": customerName.id,
+          "tax": tax,
+          "total": subtotal,
+          "discount": discount,
+          "grand_total": total,
+          "paid_status": false,
+          "user_id": user.id
         })
-      const data = await response.json()
-        .catch(error=>{
-          setError(error.message);
-        });
-      console.log(data);
-      const inv_id = await data.id;
-      for (const lineItem of items){
-        let item = {
-          quantity: lineItem.qty,
-          price: lineItem.price,
-          item_id: lineItem.item_id,
-        }
+      })
+      .then(r=>r.json())
+      .catch(error=>{
+        setError(error.message);
+      });
 
-        console.log(item);
-
-        fetch(`invoice_outs/${inv_id}/invoice_out_line_items`, {
-          method: 'POST',
-          headers: {
-          'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(item),
-        });
+      // console.log(await data);
+    for (const lineItem of items){
+      let item = {
+        quantity: lineItem.qty,
+        price: lineItem.price,
+        item_id: lineItem.item_id,
       }
 
-      setReset(true);
-      };
+      const response_line = await fetch(`/invoice_outs/${await response.id}/invoice_out_line_items`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item),
+      });
+      if (response_line.ok){
+        setMessage('Invoice has been generated!')
+      }
+    }
+      
+    setReset(true);
+     
+    };
     
     const resetForm = () => {
       fetchInvoiceNo();
@@ -102,6 +115,7 @@ function InvoiceOutForm({user}){
         setDiscount('');
         setTax('');
         setReset(false);
+        setError('')
     }
 
     const addItemHandler = () => {
@@ -149,7 +163,25 @@ function InvoiceOutForm({user}){
       });
     };
 
-   
+   useEffect(()=>{
+    const timeId = setTimeout(()=>{
+      setMessage(null)
+    }, 5000)
+
+    return ()=>{
+      clearTimeout(timeId);
+    }
+   },[message])
+
+  useEffect(()=>{
+   const timeId = setTimeout(()=>{
+    setError(null)
+  }, 5000)
+
+  return ()=>{
+    clearTimeout(timeId);
+  }
+ },[error]);
 
     const taxRate = (tax * subtotal) / 100;
     const discountRate = (discount * subtotal) / 100;
@@ -217,7 +249,10 @@ function InvoiceOutForm({user}){
       className="form"
       onSubmit={reviewInvoiceHandler}
     >
-    {error && <div>{error}</div>}
+    <div className='error centre'>{error}</div>
+    <div className="alert centre">
+      {message}
+    </div>
     <div className="invoice">
         {/* header */}
         <div className="header">
@@ -256,7 +291,8 @@ function InvoiceOutForm({user}){
           >
             Store:
           </label>
-          {reset === false && <Dropdown className="input" isSearchable placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName}/>}
+          {reset === false && <Dropdown className="input" isSearchable placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName} required/>}
+          
         </div>
         {/* Items */}
         <table className="table">
@@ -306,7 +342,7 @@ function InvoiceOutForm({user}){
           <div className="subsummary">
             <span className="title">Tax:</span>
             <span>
-            <input
+            <input required
                   className="sub-input"
                   type="number"
                   name="tax"

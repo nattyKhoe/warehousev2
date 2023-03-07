@@ -33,6 +33,6 @@ class InvoiceOutLineItemsController < ApplicationController
     end
 
     def line_item_params
-        params.permit(:quantity, :item_id, :price, :invoice_out_id)
+        params.permit(:quantity, :item_id, :price)
     end
 end
