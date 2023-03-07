@@ -16,8 +16,8 @@ const today = date.toLocaleDateString('en-GB', {
 
 function InvoiceOutForm({user}){
     const [isOpen, setIsOpen] = useState(false);
-    const [discount, setDiscount] = useState('');
-    const [tax, setTax] = useState('');
+    const [discount, setDiscount] = useState(0);
+    const [tax, setTax] = useState(0);
     const [invoiceNumber, setInvoiceNumber] = useState('');
     const [customerList, setCustomerList] = useState([]);
     const [customerName, setCustomerName] = useState({});
@@ -294,24 +294,38 @@ function InvoiceOutForm({user}){
         <div className="summary">
           <div className="subsummary">
             <span className="title">Subtotal:</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>${subtotal?subtotal.toFixed(2):0}</span>
           </div>
           <div className="subsummary">
-            <span className="title">Discount:</span>
+            <span className="title">Discount:
+            </span>
             <span>
-              ({discount || '0'}%)${discountRate.toFixed(2)}
+                ({discount} %)  ${discountRate?discountRate.toFixed(2):0}
             </span>
           </div>
           <div className="subsummary">
             <span className="title">Tax:</span>
             <span>
-              ({tax || '0'}%)${taxRate.toFixed(2)}
+            <input
+                  className="sub-input"
+                  type="number"
+                  name="tax"
+                  id="tax"
+                  min="0.01"
+                  step="0.01"
+                  max="50"
+                  placeholder="0.0"
+                  value={tax}
+                  onChange={(event) => setTax(event.target.value)}
+                />
+                  %
+              ${taxRate?taxRate.toFixed(2):0}
             </span>
           </div>
           <div className="total">
             <span className="title">Total:</span>
             <span className="title">
-              ${total % 1 === 0 ? total : total.toFixed(2)}
+              ${total ? total.toFixed(2): 0}
             </span>
           </div>
         </div>
@@ -326,8 +340,6 @@ function InvoiceOutForm({user}){
           setIsOpen={setIsOpen}
           invoiceInfo={{
             invoiceNumber,
-            // cashierName,
-            // customerName,
             subtotal,
             taxRate,
             discountRate,
@@ -340,49 +352,6 @@ function InvoiceOutForm({user}){
           :null}
           
           <div className="subfooter-2">
-            <div className="subsub">
-              <label className="sub-label" htmlFor="tax">
-                Tax rate:
-              </label>
-              <div className="sub-value">
-                <input
-                  className="sub-input"
-                  type="number"
-                  name="tax"
-                  id="tax"
-                  min="0.01"
-                  step="0.01"
-                  placeholder="0.0"
-                  value={tax}
-                  onChange={(event) => setTax(event.target.value)}
-                />
-                <span className="percent">
-                  %
-                </span>
-              </div>
-            </div>
-            <div className="subsub">
-              <label
-                className="sub-label"
-                htmlFor="discount"
-              >
-                Discount rate:
-              </label>
-              <div className="sub-value">
-                <label
-                  className="sub-input"
-                  type="number"
-                  name="discount"
-                  id="discount"
-                  value={discount}
-                >
-                {discount}
-                </label>
-                <span className="percent">
-                  %
-                </span>
-              </div>
-            </div>
           <button
             className="review_button"
             type="submit"

@@ -11,6 +11,11 @@ import NotFound from './components/NotFound/NotFound';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [name, setName] = useState();
+
+    // useEffect(()=>{
+    //     setName(user.first_name);
+    // }, []);
 
   //to save user in the system
   useEffect(()=>{

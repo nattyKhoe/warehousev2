@@ -190,7 +190,7 @@ const InvoiceModal = ({
                 </div>
               </div>
               <div className="invoice-buttons">
-                <button
+                {/* <button
                   className="invoice-button"
                   onClick={SaveAsPDFHandler}
                 >
@@ -209,7 +209,7 @@ const InvoiceModal = ({
                     />
                   </svg>
                   <span>Download</span>
-                </button>
+                </button> */}
                 <button
                   onClick={addNextInvoiceHandler}
                   className="invoice-button"
