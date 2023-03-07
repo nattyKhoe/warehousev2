@@ -256,7 +256,7 @@ function InvoiceOutForm({user}){
           >
             Store:
           </label>
-          {reset === false && <Dropdown className="input" placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName}/>}
+          {reset === false && <Dropdown className="input" isSearchable placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName}/>}
         </div>
         {/* Items */}
         <table className="table">

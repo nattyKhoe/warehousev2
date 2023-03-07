@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState, useRef} from "react";
 
 import "./styles.css";
 
@@ -10,11 +10,59 @@ function Icon() {
   );
 };
 
-function Dropdown({ placeHolder, options, selectedValue, setSelectedValue }){
+function Dropdown({ placeHolder, options, selectedValue, setSelectedValue, isSearchable }){
     const [showMenu, setShowMenu] = useState(false);
+    const inputRef = useRef();
+
+    const [searchValue, setSearchValue] = useState("");
+    const searchRef = useRef();
+    useEffect(() => {
+        setSearchValue("");
+        if (showMenu && searchRef.current) {
+            searchRef.current.focus();
+        }
+    }, [showMenu]);
+
+    const onSearch = (e) => {
+      setSearchValue(e.target.value);
+  };
+  const getOptions = () => {
+      if (!searchValue) {
+          return options;
+      }
+      return options.filter((option) => option.name.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0);
+  };
+    // const [searchValue, setSearchValue] = useState("");
+    // const searchRef = useRef();
+    
+    // function onSearch (e){
+    //   setSearchValue(e.target.value);
+    // }
+
+    // function getOptions() {
+    //   if(!searchValue){
+    //     return options;
+    //   }
+
+    //   return options.filter((option)=> option.label.toLowerCase().indexOf(searchValue.toLocaleLowerCase) >=0);
+    // }
+
+    // useEffect(()=>{
+    //   setSearchValue('');
+    //   useEffect(()=>{
+    //     setSearchValue("");
+    //     if (showMenu && searchRef.current){
+    //       searchRef.current.focus();
+    //     }
+    //   }, [showMenu])
+    // })
 
     useEffect(() =>{
-        function handler(){setShowMenu(false)};
+        function handler(e){
+          if (inputRef.current && !inputRef.current.contains(e.target)){
+            setShowMenu(false);
+          }
+        }
         window.addEventListener("click", handler);
         return ()=>{
         window.removeEventListener("click", handler);
@@ -22,7 +70,7 @@ function Dropdown({ placeHolder, options, selectedValue, setSelectedValue }){
     });
 
     function handleInputClick(e){
-        e.stopPropagation();
+        // e.stopPropagation();
         setShowMenu(!showMenu);
     }
 
@@ -48,7 +96,7 @@ function Dropdown({ placeHolder, options, selectedValue, setSelectedValue }){
 
   return (
     <div className="dropdown-container">
-      <div onClick={handleInputClick} className="dropdown-input">
+      <div ref={inputRef} onClick={handleInputClick} className="dropdown-input">
         <div className="dropdown-selected-value">{getDisplay()}</div>
         <div className="dropdown-tools">
           <div className="dropdown-tool">
@@ -58,14 +106,24 @@ function Dropdown({ placeHolder, options, selectedValue, setSelectedValue }){
       </div>
       {showMenu && (
         <div className="dropdown-menu">
-            {options.map((option) => (
+          {isSearchable && (
+            <div className="search-box">
+            <input onChange={onSearch} value={searchValue} ref={searchRef} />
+            </div>
+            )}
+          {getOptions().map((option) => (
+            <div onClick={() => onItemClick(option)} key={option.name} className={`dropdown-item ${isSelected(option) && "selected"}`}>
+            {option.name}
+            </div>
+          ))}
+            {/* {options.map((option) => (
             <div
             onClick={()=>{onItemClick(option)}}
             key={option.name}
             className={`dropdown-item ${isSelected(option) && "selected"}`}>
                 {option.name}
             </div>
-            ))}
+            ))} */}
         </div>
       )}
     </div>
