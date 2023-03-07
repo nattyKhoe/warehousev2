@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import { Routes, Route, Navigate} from "react-router-dom";
 import Login from './components/Login/Login';
 import Dashboard from './components/Dashboard/Dashboard';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
@@ -10,7 +10,6 @@ import InvoiceOutForm from './components/Invoice/Invoice';
 
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
   //to save user in the system
@@ -19,14 +18,16 @@ function App() {
     .then((res)=>{
       if (res.ok){
         res.json().then((user)=> {
-          setUser(user);
+          if (!user.error){
+            setUser(user);
+          }
+          
         });
       }
     });
-  }, [loggedIn===true])//
+  }, [])//
   
   function handleLogin (user){
-    setLoggedIn(true);
     setUser(user);
   }
   
@@ -41,7 +42,6 @@ function App() {
     })
     .then(()=>{
       setUser(null);
-      setLoggedIn(false);
     }).then(()=><Navigate to='/'/>);
     
   }
@@ -50,10 +50,9 @@ function App() {
     <div>
     {console.log(user)}
     {user? <Header user={user} onLogout={handleLogout}/> : null }
-    <BrowserRouter>
     <Routes>
       <Route exact path='/'
-      element={user?<Dashboard/> :<Login onLogin={handleLogin}/>}/>
+      element={user? <Dashboard/> :<Login onLogin={handleLogin}/>}/>
 
       <Route exact path ='/invoiceouts/new'
         element={user? <InvoiceOutForm user={user}/>:<Login onLogin={handleLogin}/>} />
@@ -67,7 +66,6 @@ function App() {
           </PrivateRoute>
       }/>  */}
     </Routes>
-    </BrowserRouter>
 
     {/* <BrowserRouter>
       
