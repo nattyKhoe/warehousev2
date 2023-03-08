@@ -1,6 +1,6 @@
 class InvoiceInsController < ApplicationController
     before_action :set_invoice_in, only: [:update, :destroy, :show]
-    
+    before_action :require_login
     def index
         render json: InvoiceIn.all, status: :ok
     end
