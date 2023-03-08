@@ -1,3 +1,5 @@
 class InvoiceOutStoreSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :invoice_number, :date, :total, :discount, :tax, :grand_total, :store
+
+  
 end
