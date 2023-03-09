@@ -6,7 +6,7 @@ class InvoiceOutsController < ApplicationController
     end
 
     def show
-        render json: @invoice_out, status: :ok
+        render json: @invoice_out, serializer: InvoiceOutStoreSerializer, status: :ok
     end
 
     def create
