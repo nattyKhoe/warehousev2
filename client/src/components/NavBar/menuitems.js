@@ -33,10 +33,10 @@ export const menuItems = [
             //     title: "View/Edit Invoice Out",
             //     url: "/invoiceouts/view"
             // },
-            // {
-            //     title: "View all Invoices Out",
-            //     url: "/invoiceouts/all"
-            // }
+            {
+                title: "View all Invoices Out",
+                url: "/invoiceouts/all"
+            }
         ]
     },
     // {

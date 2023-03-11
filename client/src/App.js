@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Header from './components/Header/Header';
 import InvoiceOutForm from './components/Invoice/Invoice';
 import NotFound from './components/NotFound/NotFound';
+import InvoiceTable from './components/ViewInvoices/ViewInvoice';
 
 
 
@@ -60,7 +61,8 @@ function App() {
 
       <Route exact path ='/invoiceouts/new'
         element={user? <InvoiceOutForm user={user}/>:<Login onLogin={handleLogin}/>} />
-
+      <Route exact path = '/invoiceouts/all'
+        element={user? <InvoiceTable/>:<Login onLogin={handleLogin}/>} />
       <Route path='*' element={<NotFound/>}/>
     </Routes>
 
