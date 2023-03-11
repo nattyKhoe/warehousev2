@@ -1,6 +1,7 @@
 
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function InvoiceTable() {
   const [invoices, setInvoices] = useState([]);
@@ -10,6 +11,10 @@ function InvoiceTable() {
       .then(response => response.json())
       .then(data => setInvoices(data));
   }, []);
+
+  // function handleClick(e){
+  //   useNavigate(`/invoice_outs/${e.target.key}/edit`)
+  // }
 
   return (
     <table>
@@ -34,7 +39,7 @@ function InvoiceTable() {
             <td>{invoice.tax}</td>
             <td>{invoice.discount}</td>
             <td>{invoice.grand_total}</td>
-            <td><button>Edit/View</button></td>
+            <td><Link to={`/invoice_outs/${invoice.id}/edit`}>View/Edit</Link></td>
           </tr>
         ))}
       </tbody>
