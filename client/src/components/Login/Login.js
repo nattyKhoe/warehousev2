@@ -41,7 +41,7 @@ function Login({onLogin}){
     .catch(error=>{
       setError(error.message);
     });
-    };
+  }
 
     return (
         <div className='container'>
@@ -65,4 +65,4 @@ function Login({onLogin}){
 
 
 
-export default Login
+export default Login;

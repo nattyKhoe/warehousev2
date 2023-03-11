@@ -2,7 +2,7 @@ class InvoiceOut < ApplicationRecord
     belongs_to :store
     # belongs_to :user
     has_many :invoice_out_line_items, dependent: :destroy
-
+    has_many :items, through: :invoice_out_line_items
     # validates :payment_method, inclusion: {in: %w(cash credit)}
     # validates_date :due_date, on_or_after: :today, on_or_before: lambda {today.weeks_since(4)}
     validates :invoice_number, presence: true

@@ -5,22 +5,19 @@ import { useEffect, useState } from "react";
 import { wait } from "../../helpers/helpers";
 
 
-function Header ({onLogout, user}) {
-    // const [name, setName] = useState();
-
-    // useEffect(()=>{
-    //     setName(user.first_name);
-    // }, []);
+function Header ({onLogout, first_name, account_type}) {
 
     return(
         <header>
-            <h5>Hello {user.first_name}!</h5>
-            <div className="nav-area">
-            <a href="/" className="logo">
-            <img src={logo} alt="company-logo"/>
-            </a>
-            <NavBar acc_type={user.account_type}/>
-            <button onClick={onLogout}>Logout</button>
+            <div>
+                <h5>Hello {first_name}!</h5>
+                <div className="nav-area">
+                <a href="/" className="logo">
+                <img src={logo} alt="company-logo"/>
+                </a>
+                <NavBar acc_type={account_type}/>
+                <button onClick={onLogout}>Logout</button>
+                </div>
             </div>
         </header> 
     )

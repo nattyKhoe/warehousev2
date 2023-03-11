@@ -6,12 +6,14 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Header from './components/Header/Header';
 import InvoiceOutForm from './components/Invoice/Invoice';
 import NotFound from './components/NotFound/NotFound';
-import InvoiceTable from './components/ViewInvoices/ViewInvoice';
+import InvoiceTable from './components/InvoiceTable/InvoiceTable';
+import ViewInvoice from './components/ViewInvoice/ViewInvoice';
 
 
 
 function App() {
   const [user, setUser] = useState(null);
+
 
     // useEffect(()=>{
     //     setName(user.first_name);
@@ -31,6 +33,7 @@ function App() {
       }
     });
   }, [])//
+  
   
   function handleLogin (user){
     setUser(user);
@@ -53,8 +56,7 @@ function App() {
 
   return (
     <div>
-    {console.log(user)}
-    {user? <Header user={user} onLogout={handleLogout}/> : null }
+    {user? <Header first_name={user.first_name} account_type={user.account_type} onLogout={handleLogout}/> : null }
     <Routes>
       <Route exact path='/'
       element={user? <Dashboard/> :<Login onLogin={handleLogin}/>}/>
@@ -62,8 +64,11 @@ function App() {
       <Route exact path ='/invoiceouts/new'
         element={user? <InvoiceOutForm user={user}/>:<Login onLogin={handleLogin}/>} />
       <Route exact path = '/invoiceouts/all'
-        element={user? <InvoiceTable/>:<Login onLogin={handleLogin}/>} />
+        element={user? <InvoiceTable/>:<Login onLogin={handleLogin} />} />
       <Route path='*' element={<NotFound/>}/>
+
+      <Route exact path = '/invoice_outs/:id/edit'
+        element={user? <ViewInvoice user={user}/>: <Login onLogin={handleLogin} />} />
     </Routes>
 
     

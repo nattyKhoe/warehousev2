@@ -1,3 +1,3 @@
-class ManufacturerSerializerSerializer < ActiveModel::Serializer
+class ManufacturerSerializer < ActiveModel::Serializer
   attributes :id
 end

@@ -1,22 +1,28 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Loading from '../Loading/Loading';
 
 function InvoiceTable() {
   const [invoices, setInvoices] = useState([]);
+  const [error, setError]= useState('');
+  const [isLoading, setIsLoading]= useState(true)
 
   useEffect(() => {
     fetch('/invoice_outs')
       .then(response => response.json())
-      .then(data => setInvoices(data));
+      .then(data => setInvoices(data))
+      .catch(err => setError(err))
+      .finally(()=>setIsLoading(false))
   }, []);
 
-  // function handleClick(e){
-  //   useNavigate(`/invoice_outs/${e.target.key}/edit`)
-  // }
-
+  if (isLoading){
+    return <Loading/>
+  }
   return (
+    <>
+    {error
+    ?(<h4>error</h4>)
+    :null}
     <table>
       <thead>
         <tr>
@@ -44,6 +50,7 @@ function InvoiceTable() {
         ))}
       </tbody>
     </table>
+    </>
   );
 }
 
