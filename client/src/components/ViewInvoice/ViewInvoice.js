@@ -4,7 +4,7 @@ import InvoiceModal from '../Invoice/InvoiceModal';
 import Loading from '../Loading/Loading'
 import styles from './styles.css';
 import Dropdown from '../Dropdown/Dropdown';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 function ViewInvoice({user}){
     const [discount, setDiscount] = useState(0);
@@ -22,7 +22,6 @@ function ViewInvoice({user}){
     const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
 
-    const navigate = useNavigate();
     const {id} = useParams();
     useEffect(()=>{
         fetch(`/invoice_outs/${id}`)

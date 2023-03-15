@@ -1,31 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Loading from '../Loading/Loading';
-import styles from './styles.css'
+import Dropdown from '../Dropdown/Dropdown';
+import styles from './styles.css';
+
 
 function InvoiceTable() {
   const [invoices, setInvoices] = useState([]);
+  const [unfilteredInvoices, setUnfilteredInvoices] = useState([])
   const [error, setError]= useState('');
-  const [isLoading, setIsLoading]= useState(true)
+  const [isLoading, setIsLoading]= useState(true);
+  const [filter, setFilter] = useState(null);
+  const [customerList, setCustomerList] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
+
+  function cancelFilter (){
+    setFilter(null);
+    // setIsFiltering(false);
+  }
 
   useEffect(() => {
+      //get store list
+    fetch('/stores', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        }
+      })
+      .then(r =>{
+        if (r.ok) {
+          r.json().then(data=>setCustomerList(data))
+        }
+      });
     fetch('/invoice_outs')
       .then(response => response.json())
-      .then(data => setInvoices(data))
+      .then(data => {
+        setInvoices(data);
+        setUnfilteredInvoices(data)})
       .catch(err => setError(err))
       .finally(()=>setIsLoading(false))
   }, []);
+
+  useEffect(()=>{
+    if (filter){
+      setIsFiltering(true);
+      setInvoices(unfilteredInvoices.filter((invoice) => invoice.store_name === filter.name));
+    } else {
+      setIsFiltering(false);
+      setInvoices(unfilteredInvoices)
+    }
+  }, [filter])
 
   if (isLoading){
     return <Loading/>
   }
   return (
-    <>
+    <div>
     <br/>
     <h1>Invoices Table</h1>
     {error
     ?(<h4>error</h4>)
     :null}
+    <div className="details">
+    <label
+            htmlFor="cashierName"
+            className="cashier"
+          >
+          </label>
+          <h4
+            className="input"
+          >
+          </h4>
+      <label
+        htmlFor="customerName"
+        className="customer"
+      >
+      Store:
+      </label>
+      <Dropdown className="input" isSearchable placeHolder="All Customer" options={customerList} selectedValue={filter} setSelectedValue={setFilter} required/>
+      {isFiltering?<button className='input' onClick={cancelFilter}>Cancel</button>:null}
+      </div>
+      <br/>
     <table>
       <thead>
         <tr>
@@ -60,7 +116,7 @@ function InvoiceTable() {
         ))}
       </tbody>
     </table>
-    </>
+    </div>
   );
 }
 
