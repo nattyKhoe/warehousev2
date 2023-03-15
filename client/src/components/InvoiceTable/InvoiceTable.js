@@ -21,6 +21,8 @@ function InvoiceTable() {
   }
   return (
     <>
+    <br/>
+    <h1>Invoices Table</h1>
     {error
     ?(<h4>error</h4>)
     :null}

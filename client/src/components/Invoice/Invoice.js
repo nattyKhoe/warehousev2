@@ -249,6 +249,8 @@ function InvoiceOutForm({user}){
       className="form"
       onSubmit={reviewInvoiceHandler}
     >
+    <br/>
+    <h1>New Invoice</h1>
     <div className='error centre'>{error}</div>
     <div className="alert centre">
       {message}

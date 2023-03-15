@@ -207,6 +207,8 @@ function ViewInvoice({user}){
       className='form'
       onSubmit={preventSubmit}
     >
+    <br/>
+    <h1>Edit Invoice</h1>
     <div className='error centre'>{error}</div>
     <div className='alert centre'>
       {message}
