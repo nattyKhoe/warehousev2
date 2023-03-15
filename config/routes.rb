@@ -22,7 +22,7 @@ Rails.application.routes.draw do
 
   #nested in progress
   resources :invoice_outs, only: [:show] do 
-    resources :invoice_out_line_items, only: [:create, :destroy];
+    resources :invoice_out_line_items, only: [:index, :create, :destroy];
   end
 
     # resources :invoice_out_line_items, only: [:create, :destroy, :update]

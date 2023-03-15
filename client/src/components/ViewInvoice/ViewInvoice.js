@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { uid } from 'uid';
 import InvoiceItem from '../Invoice/InvoiceItem';
 import InvoiceModal from '../Invoice/InvoiceModal';
 import Loading from '../Loading/Loading'
@@ -17,11 +16,11 @@ function ViewInvoice({user}){
     const [subtotal, setSubtotal] = useState(1.00);
     const [items, setItems] = useState([]);
     const [itemList, setItemList] = useState([]);
-    const [reset, setReset] = useState(false);
     const [error, setError]= useState('');
     const [message, setMessage] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
 
     const navigate = useNavigate();
     const {id} = useParams();
@@ -35,7 +34,15 @@ function ViewInvoice({user}){
                     setInvoiceNumber(data.invoice_number);
                     setDiscount(data.discount);
                     setTax(data.tax);
-                    setItems(data.invoice_out_line_items);
+                    setItems(data.invoice_out_line_items.map((item) =>(
+                      {
+                        id: item.id,
+                        qty: item.quantity,
+                        price: item.price,
+                        name: item.name,
+                        item_id: item.item_id
+                      })
+                    ));
                 })
             }
         })
@@ -73,8 +80,7 @@ function ViewInvoice({user}){
         });
     }, []);
   
-    const reviewInvoiceHandler = (event) => {
-      event.preventDefault();
+    const reviewInvoiceHandler = () => {
       if (items[0].item_id && customerName.id) {
         setIsOpen(true);
       }
@@ -87,6 +93,10 @@ function ViewInvoice({user}){
         }
     
     };
+
+    const preventSubmit =e =>{
+      e.preventDefault()
+    }
   
     const saveUpdateInvoiceHandler = async() => {
       const response = await fetch(`/invoice_outs/${id}`,{
@@ -112,13 +122,14 @@ function ViewInvoice({user}){
 
     for (const lineItem of items){
       let item = {
+        id: lineItem.id,
         quantity: lineItem.qty,
         price: lineItem.price,
         item_id: lineItem.item_id,
       }
 
-      const response_line = await fetch(`/invoice_outs/${await response.id}/invoice_out_line_items`, {
-        method: 'POST',
+      const response_line = await fetch(`/invoice_outs/${id}/invoice_out_line_items/${item.id}`, {
+        method: 'PATCH',
         headers: {
         'Content-Type': 'application/json'
         },
@@ -128,31 +139,7 @@ function ViewInvoice({user}){
         setMessage('Invoice has been updated!')
       }
     }
-      
-    setReset(true);
-     
-    };
-    
-    const resetForm = () => {
-        navigate('/invoice_outs')
-    }
-
-    const addItemHandler = () => {
-      const id = uid(6);
-      setItems((prevItem) => [
-        ...prevItem,
-        {
-          id: id,
-          item_id: '',
-          name: '',
-          qty: 1,
-          price: '1.00',
-        },
-      ]);
-    };
-  
-    const deleteItemHandler = (id) => {
-      setItems((prevItem) => prevItem.filter((item) => item.id !== id));
+      setIsEditing(false)    
     };
   
     const editItemHandler = (id, item) => {
@@ -165,6 +152,14 @@ function ViewInvoice({user}){
   
       setItems(newItems);
     };
+
+    const handleEdit = () => {
+      if (isEditing) {
+        setIsEditing(false);
+      } else {
+        setIsEditing(true);
+      }
+    }
 
    useEffect(()=>{
     const timeId = setTimeout(()=>{
@@ -196,31 +191,21 @@ function ViewInvoice({user}){
       let sub = 0;
       if (items.length > 0) {
         for (let i =0 ; i < items.length; i++){
-          sub += items[i].price*items[i].quantity
+          sub += items[i].price*items[i].qty
         }
       }
       setSubtotal(sub);
       
     }, [items]);
 
-//     // setting reset
-
-    useEffect(()=>{
-        if (message === "Invoice has been updated!"){
-            const rest = setTimeout(resetForm(), 5000);
-            return ()=>{
-                clearTimeout(rest);
-              }
-        }
-    }, [reset===true]);
-
     if (isLoading){
       return <Loading/>
     }
+
     return(
     <form
       className='form'
-      onSubmit={reviewInvoiceHandler}
+      onSubmit={preventSubmit}
     >
     <div className='error centre'>{error}</div>
     <div className='alert centre'>
@@ -264,15 +249,11 @@ function ViewInvoice({user}){
           >
             Store:
           </label>
-          <h4 className='input'>
+          {isEditing
+          ? <Dropdown className="input" isSearchable placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName} required/>
+          : (<h4 className='input'>
             {customerName.name}
-            <button>
-                edit
-            </button>
-          </h4>
-
-          {reset === false && <Dropdown className="input" isSearchable placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName} required/>}
-          
+          </h4>)}
         </div>
         {/* Items */}
         <table className="table">
@@ -281,41 +262,37 @@ function ViewInvoice({user}){
               <th>ITEM</th>
               <th>QTY</th>
               <th className="centre">PRICE</th>
-              <th className="centre">ACTION</th>
             </tr>
           </thead>
           <tbody>
-            {
-              items.map((item=>(
+            { isEditing 
+              ?items.map((item) => (
+                <InvoiceItem
+                  isItemFetched
+                  key={item.id}
+                  id={item.id}
+                  itemList={itemList}
+                  value={{
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    qty: item.qty,
+                  }}
+                  onEditItem={editItemHandler}
+                />
+              ))
+              :items.map((item=>(
                 <tr>
-                <td id="item-name">{item.item_name}</td>
-                <td id="item-quantity">{item.quantity}</td>
+                <td id="item-name">{item.name}</td>
+                <td id="item-quantity">{item.qty}</td>
                 <td id="item-price">${item.price}</td>
-                <td id="item-button"><button>edit</button></td>
+                {/* <td id="item-button"><button>edit</button></td> */}
                 </tr>
               )))
             }
-            {reset===false && items.map((item) => (
-              <InvoiceItem
-                key={item.id}
-                id={item.id}
-                name={item.item_name}
-                itemList={itemList}
-                qty={item.quantity}
-                price={item.price}
-                onDeleteItem={deleteItemHandler}
-                onEditItem={editItemHandler}
-              />
-            ))}
           </tbody>
         </table>
-        <button
-          className="add_button"
-          type="button"
-          onClick={addItemHandler}
-        >
-          Add Item
-        </button>
+       
         {/* subtotal and total */}
         <div className="summary">
           <div className="subsummary">
@@ -360,7 +337,24 @@ function ViewInvoice({user}){
         <div className="subfooter-1">
          
           {/* reviewed Invoice conditional */}
-          {isOpen
+
+          <div className="subfooter-2">
+            {isEditing
+            ? (<button
+                className="review_button"
+                type="submit"
+                onClick={reviewInvoiceHandler}
+              >
+                Review Invoice
+              </button>)
+            : ( <button
+                className='review_button'
+                onClick={handleEdit}
+                >
+                  Edit
+                </button>)
+            }
+          {isOpen && isEditing
           ?<InvoiceModal
           isOpen={isOpen}
           setIsOpen={setIsOpen}
@@ -376,13 +370,7 @@ function ViewInvoice({user}){
           items={items}
           onAddNextInvoice={saveUpdateInvoiceHandler}/>
           :null}
-          <div className="subfooter-2">
-          <button
-            className="review_button"
-            type="submit"
-          >
-            Review Invoice
-          </button>
+
           </div>
         </div>
       </div>

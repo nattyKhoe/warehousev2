@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Loading from '../Loading/Loading';
+import styles from './styles.css'
 
 function InvoiceTable() {
   const [invoices, setInvoices] = useState([]);
@@ -29,23 +30,30 @@ function InvoiceTable() {
           <th>Date</th>
           <th>ID</th>
           <th>Customer</th>
+          <th></th>
           <th>Total</th>
+          <th></th>
           <th>Tax</th>
           <th>Discount</th>
+          <th></th>
           <th>Grand Total</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         {invoices.map(invoice => (
           <tr key={invoice.id}>
-            <td>{invoice.date}</td>
-            <td>{invoice.invoice_number}</td>
-            <td>{invoice.store_name}</td>
-            <td>{invoice.total}</td>
-            <td>{invoice.tax}</td>
-            <td>{invoice.discount}</td>
-            <td>{invoice.grand_total}</td>
-            <td><Link to={`/invoice_outs/${invoice.id}/edit`}>View/Edit</Link></td>
+            <td className='date'>{invoice.date}</td>
+            <td className='invoice_no'>{invoice.invoice_number}</td>
+            <td className='store'>{invoice.store_name}</td>
+            <td className='dollar'>$</td>
+            <td className='number'>{(Math.round(invoice.total*100)/100).toFixed(2)}</td>
+            <td className='dollar'>$</td>
+            <td className='number'>{(Math.round(invoice.tax*100)/100).toFixed(2)}</td>
+            <td className='discount'>{invoice.discount} %</td>
+            <td className='dollar'>$</td>
+            <td className='number'>{(Math.round(invoice.grand_total*100)/100).toFixed(2)}</td>
+            <td className='link'><Link to={`/invoice_outs/${invoice.id}/edit`}>View/Edit</Link></td>
           </tr>
         ))}
       </tbody>

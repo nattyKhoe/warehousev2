@@ -311,7 +311,7 @@ function InvoiceOutForm({user}){
                 id={item.id}
                 name={item.name}
                 itemList={itemList}
-                qty={item.qty}
+                // quantity={item.quantity}
                 price={item.price}
                 onDeleteItem={deleteItemHandler}
                 onEditItem={editItemHandler}

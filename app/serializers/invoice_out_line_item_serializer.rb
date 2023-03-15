@@ -1,7 +1,7 @@
 class InvoiceOutLineItemSerializer < ActiveModel::Serializer
-  attributes :id, :quantity, :price, :total_amount, :item_name
+  attributes :id, :quantity, :price, :total_amount, :name, :item_id
 
-  def item_name
+  def name
     object.item.name
   end
 end

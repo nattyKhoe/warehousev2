@@ -59,7 +59,7 @@ function App() {
     {user? <Header first_name={user.first_name} account_type={user.account_type} onLogout={handleLogout}/> : null }
     <Routes>
       <Route exact path='/'
-      element={user? <Dashboard/> :<Login onLogin={handleLogin}/>}/>
+      element={user? <InvoiceTable/> :<Login onLogin={handleLogin}/>}/>
 
       <Route exact path ='/invoiceouts/new'
         element={user? <InvoiceOutForm user={user}/>:<Login onLogin={handleLogin}/>} />
