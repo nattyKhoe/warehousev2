@@ -2,7 +2,6 @@ import './App.css';
 import React, {useEffect, useState} from 'react';
 import { Routes, Route, Navigate} from "react-router-dom";
 import Login from './components/Login/Login';
-import Dashboard from './components/Dashboard/Dashboard';
 import Header from './components/Header/Header';
 import InvoiceOutForm from './components/Invoice/Invoice';
 import NotFound from './components/NotFound/NotFound';
@@ -13,11 +12,6 @@ import ViewInvoice from './components/ViewInvoice/ViewInvoice';
 
 function App() {
   const [user, setUser] = useState(null);
-
-
-    // useEffect(()=>{
-    //     setName(user.first_name);
-    // }, []);
 
   //to save user in the system
   useEffect(()=>{
@@ -34,7 +28,7 @@ function App() {
     });
   }, [])//
   
-  
+
   function handleLogin (user){
     setUser(user);
   }
@@ -62,7 +56,9 @@ function App() {
       element={user? <InvoiceTable/> :<Login onLogin={handleLogin}/>}/>
 
       <Route exact path ='/invoiceouts/new'
-        element={user? <InvoiceOutForm user={user}/>:<Login onLogin={handleLogin}/>} />
+        element={user
+        ? <InvoiceOutForm user={user}/>
+        :<Login onLogin={handleLogin}/>} />
       <Route exact path = '/invoiceouts/all'
         element={user? <InvoiceTable/>:<Login onLogin={handleLogin} />} />
       <Route path='*' element={<NotFound/>}/>

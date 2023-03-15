@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { wait } from "../../helpers/helpers";
 
 
-function Header ({onLogout, first_name, account_type}) {
+function Header ({onLogout, page, first_name, account_type}) {
 
     return(
         <header>
@@ -18,6 +18,8 @@ function Header ({onLogout, first_name, account_type}) {
                 <NavBar acc_type={account_type}/>
                 <button onClick={onLogout}>Logout</button>
                 </div>
+
+                <h1>{page}</h1>
             </div>
         </header> 
     )
