@@ -8,19 +8,28 @@ class InvoiceOutLineItemsController < ApplicationController
 
     def create
         line_item = @invoice_out.invoice_out_line_items.create(line_item_params)
+        item = Item.find(line_item.item_id)
+        item.update(stock: item.stock - line_item.quantity)
         render json: line_item, status: :created
     end
 
     def update
-        line_item = @invoice_out.line_items.find(params[:id]).update!(line_item_params)
+        line_item = @invoice_out.invoice_out_line_items.find(params[:id])
+        old_qty = line_item.quantity
+        line_item.update(line_item_params)
+        dif_qty = line_item.quantity - old_qty
+        if dif_qty != 0
+            item = Item.find(line_item.item_id)
+            item.update!(stock: (item.stock - dif_qty))
+        end
         render json: line_item, status: :accepted
     end
 
-    def destroy
-        line_item = @invoice_out.line_items.find(params[:id])
-        line_item.destroy
-        head :no_content
-    end
+    # def destroy
+    #     line_item = @invoice_out.line_items.find(params[:id])
+    #     line_item.destroy
+    #     head :no_content
+    # end
 
     private
 
@@ -33,6 +42,6 @@ class InvoiceOutLineItemsController < ApplicationController
     end
 
     def line_item_params
-        params.permit(:quantity, :item_id, :price)
+        params.permit(:id, :invoice_out_id, :quantity, :item_id, :price)
     end
 end

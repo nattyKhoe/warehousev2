@@ -5,9 +5,9 @@ class InvoiceOutLineItem < ApplicationRecord
     validates :quantity, numericality: {greater_than: 0}
     # validate :validate_stock
     
-    def price
-        item.price
-    end
+    # def price
+    #     item.price
+    # end
 
     def total_amount
         price*quantity

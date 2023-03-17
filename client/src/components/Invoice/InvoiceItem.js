@@ -34,7 +34,10 @@ const InvoiceItem = ({ isItemFetched, value, id, itemList, onDeleteItem, onEditI
     <tr>
       {console.log(value)}
       <td id="item-name">
-        <Dropdown isSearchable placeHolder="select item" options={itemList} selectedValue={selectedValue} setSelectedValue={setSelectedValue}/>
+        {isItemFetched
+        ?value.name
+        :
+        <Dropdown isSearchable placeHolder="select item" options={itemList} selectedValue={selectedValue} setSelectedValue={setSelectedValue}/>}
       </td>
       <td id='item-qty'>
         <InvoiceField

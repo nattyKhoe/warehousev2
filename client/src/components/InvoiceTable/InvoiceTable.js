@@ -19,6 +19,30 @@ function InvoiceTable() {
     // setIsFiltering(false);
   }
 
+  // function sortFunction(){
+  //     if (typeof Object.defineProperty === 'function'){
+  //       try{Object.defineProperty(Array.prototype,'sortBy',{value:sb}); }catch(e){}
+  //     }
+  //     if (!Array.prototype.sortBy) Array.prototype.sortBy = sb;
+    
+  //     function sb(f){
+  //       for (var i=this.length;i;){
+  //         var o = this[--i];
+  //         this[i] = [].concat(f.call(o,o,i),o);
+  //       }
+  //       this.sort(function(a,b){
+  //         for (var i=0,len=a.length;i<len;++i){
+  //           if (a[i]!=b[i]) return a[i]<b[i]?-1:1;
+  //         }
+  //         return 0;
+  //       });
+  //       for (var i=this.length;i;){
+  //         this[--i]=this[i][this[i].length-1];
+  //       }
+  //       return this;
+  //     }
+  //   }
+
   useEffect(() => {
       //get store list
     fetch('/stores', {
@@ -36,8 +60,12 @@ function InvoiceTable() {
     fetch('/invoice_outs')
       .then(response => response.json())
       .then(data => {
-        setInvoices(data);
-        setUnfilteredInvoices(data)})
+        let dataSorted = data.sort(
+          (a, b) => Number(b.id) - Number(a.id),
+        )
+        console.log(dataSorted)
+        setInvoices(dataSorted); // put sort function here
+        setUnfilteredInvoices(dataSorted)})
       .catch(err => setError(err))
       .finally(()=>setIsLoading(false))
   }, []);
@@ -78,8 +106,14 @@ function InvoiceTable() {
       >
       Store:
       </label>
-      <Dropdown className="input" isSearchable placeHolder="All Customer" options={customerList} selectedValue={filter} setSelectedValue={setFilter} required/>
-      {isFiltering?<button className='input' onClick={cancelFilter}>Cancel</button>:null}
+      <Dropdown className="input eighty" isSearchable placeHolder="All Customer" options={customerList} selectedValue={filter} setSelectedValue={setFilter} required/>
+      {isFiltering?(
+      <>
+      <div className='input'/>
+        <button className='cancel' onClick={cancelFilter}>Cancel</button>
+        <div className='cancel80'/>
+      </>
+      ):null}
       </div>
       <br/>
     <table>

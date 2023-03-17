@@ -42,3 +42,11 @@ th,
     text-align: right;
     justify-content: left;
   }
+
+  .cancel{
+    width: 20%;
+  }
+  
+  .input .eighty .dropdown-menu{
+    width: 75%;
+  }

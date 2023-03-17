@@ -121,13 +121,13 @@ function ViewInvoice({user}){
 
     for (const lineItem of items){
       let item = {
-        id: lineItem.id,
         quantity: lineItem.qty,
-        price: lineItem.price,
-        item_id: lineItem.item_id,
+        // price: lineItem.price,
+        // item_id: lineItem.item_id,
       }
+      console.log(item);
 
-      const response_line = await fetch(`/invoice_outs/${id}/invoice_out_line_items/${item.id}`, {
+      const response_line = await fetch(`/invoice_outs/${id}/invoice_out_line_items/${lineItem.id}`, {
         method: 'PATCH',
         headers: {
         'Content-Type': 'application/json'
@@ -250,11 +250,9 @@ function ViewInvoice({user}){
           >
             Store:
           </label>
-          {isEditing
-          ? <Dropdown className="input" isSearchable placeHolder="select customer" options={customerList} selectedValue={customerName} setSelectedValue={setCustomerName} required/>
-          : (<h4 className='input'>
+        <h4 className='input'>
             {customerName.name}
-          </h4>)}
+          </h4>
         </div>
         {/* Items */}
         <table className="table">

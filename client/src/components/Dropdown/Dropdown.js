@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState, useRef} from "react";
+import React, { useEffect, useState, useRef} from "react";
 
 import "./styles.css";
 
@@ -10,12 +10,13 @@ function Icon() {
   );
 };
 
-function Dropdown({ placeHolder, options, selectedValue, setSelectedValue, isSearchable }){
+function Dropdown({ placeHolder, options, selectedValue, setSelectedValue, isSearchable, isMulti}){
     const [showMenu, setShowMenu] = useState(false);
     const inputRef = useRef();
 
     const [searchValue, setSearchValue] = useState("");
     const searchRef = useRef();
+
     useEffect(() => {
         setSearchValue("");
         if (showMenu && searchRef.current) {
@@ -23,51 +24,28 @@ function Dropdown({ placeHolder, options, selectedValue, setSelectedValue, isSea
         }
     }, [showMenu]);
 
-    const onSearch = (e) => {
+    useEffect(() =>{
+      function handler(e){
+        if (inputRef.current && !inputRef.current.contains(e.target)){
+          setShowMenu(false);
+        }
+      }
+      window.addEventListener("click", handler);
+      return ()=>{
+      window.removeEventListener("click", handler);
+      };
+  });
+
+    function onSearch(e) {
       setSearchValue(e.target.value);
-  };
-  const getOptions = () => {
+    } ;
+    function getOptions(){
       if (!searchValue) {
           return options;
       }
       return options.filter((option) => option.name.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0);
   };
-    // const [searchValue, setSearchValue] = useState("");
-    // const searchRef = useRef();
-    
-    // function onSearch (e){
-    //   setSearchValue(e.target.value);
-    // }
 
-    // function getOptions() {
-    //   if(!searchValue){
-    //     return options;
-    //   }
-
-    //   return options.filter((option)=> option.label.toLowerCase().indexOf(searchValue.toLocaleLowerCase) >=0);
-    // }
-
-    // useEffect(()=>{
-    //   setSearchValue('');
-    //   useEffect(()=>{
-    //     setSearchValue("");
-    //     if (showMenu && searchRef.current){
-    //       searchRef.current.focus();
-    //     }
-    //   }, [showMenu])
-    // })
-
-    useEffect(() =>{
-        function handler(e){
-          if (inputRef.current && !inputRef.current.contains(e.target)){
-            setShowMenu(false);
-          }
-        }
-        window.addEventListener("click", handler);
-        return ()=>{
-        window.removeEventListener("click", handler);
-        };
-    });
 
     function handleInputClick(e){
         // e.stopPropagation();
@@ -94,6 +72,9 @@ function Dropdown({ placeHolder, options, selectedValue, setSelectedValue, isSea
         return selectedValue.value === option.value;
     }
 
+    // if (isMulti){
+    //   setSelectedValue([])
+    // }
   return (
     <div className="dropdown-container">
       <div ref={inputRef} onClick={handleInputClick} className="dropdown-input">
@@ -116,14 +97,6 @@ function Dropdown({ placeHolder, options, selectedValue, setSelectedValue, isSea
             {option.name}
             </div>
           ))}
-            {/* {options.map((option) => (
-            <div
-            onClick={()=>{onItemClick(option)}}
-            key={option.name}
-            className={`dropdown-item ${isSelected(option) && "selected"}`}>
-                {option.name}
-            </div>
-            ))} */}
         </div>
       )}
     </div>
